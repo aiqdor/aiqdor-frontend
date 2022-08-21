@@ -26,6 +26,7 @@ const LoginPage = () => {
             }}
             autoComplete="off"
             display="flex"
+            noValidate //teste tirar
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
