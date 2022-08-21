@@ -1,41 +1,56 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "../types/User";
-
-export type AuthContextType = {
-  isAuthenticated: boolean;
-  user: User | null;
-  // login: (email: string, password: string) => Promise<boolean>;
-  login: (email: string, password: string) => void; 
-  logout: () => void; 
-}
+import { LoggedUser } from "../types/LoggedUser"; 
+import { AuthContextType } from "../types/AuthContextType";
 
 export const AuthContext = createContext<AuthContextType>(null!);
-
 export default AuthContext;
 
-export const AuthProvider = ( { children }: { children: JSX.Element } ) => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }: { children: JSX.Element }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState<LoggedUser | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Retrieve the user from localStorage if it exists
+        const user = localStorage.getItem("user");
+        if (user) {
+            setUser(JSON.parse(user));
+        } 
+
+        setLoading(false);
+    }, []);
 
     const login = (email: string, password: string) => {
-      console.log("login auth", { email, password });
+        console.log("login auth", { email, password });
 
-      if (password === 'secret') {
-        // setUser({ id: '123', email });
-        navigate("/");
-      }
-    }
-  
+        const loggedUser = {
+            id: "123",
+            name: "jorgin",
+            email,
+            token: "assa"
+        };
+
+        localStorage.setItem("user", JSON.stringify(loggedUser));
+
+        if (password === "secret") {
+            setUser(loggedUser);
+            navigate("/");
+        }
+    };
+
     const logout = () => {
-      console.log('logout');
-      setUser(null);
-      navigate("/");
-    }
+        console.log("logout");
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/");
+    };
 
-    return(
-        <AuthContext.Provider value={{isAuthenticated: !!user, user, login, logout}}>
-          {children}
+    return (
+        <AuthContext.Provider
+            value={{ isAuthenticated: !!user, user, loading, login, logout }}
+        >
+            {children}
         </AuthContext.Provider>
-    )
-}
+    );
+};

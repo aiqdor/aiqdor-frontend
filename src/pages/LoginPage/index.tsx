@@ -26,12 +26,11 @@ const LoginPage = () => {
             }}
             autoComplete="off"
             display="flex"
-            noValidate //teste tirar
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
             minHeight="100vh"
-            onSubmit={handleSubmit}
+            onSubmit={ handleSubmit }
         >
             <TextField
                 required
@@ -53,8 +52,6 @@ const LoginPage = () => {
             <Button variant="text" type="submit">
                 Entrar
             </Button>
-
-            <p>{isAuthenticated ? "Logged in" : "Not logged in"}</p> {/*só para fim de teste*/}
         </Box>
     );
 };

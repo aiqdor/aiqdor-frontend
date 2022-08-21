@@ -14,7 +14,12 @@ import AuthContext, { AuthProvider } from "./context/auth";
 
 const AppRoutes = () => {
   const Private = ( { children }: { children: JSX.Element } )  => {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, loading } = useContext(AuthContext);
+
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
     if (isAuthenticated) {
       return children;
     } else {

@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/auth";
 
 const HomePage = () => {
+    const { isAuthenticated, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const goToLoginPage = () => {
-        navigate("/login");
+    const handleClick = () => {
+        if (isAuthenticated) {
+            logout();
+        navigate("/");
+        } else {
+            navigate("/login");  
+        }
     }
 
     return (
@@ -16,8 +23,8 @@ const HomePage = () => {
             alignItems="center"
             minHeight="100vh"
         >
-            <Button variant="contained" color="primary" onClick={goToLoginPage}>
-                Make Login
+            <Button variant="contained" color="primary" onClick={ handleClick }>
+                { isAuthenticated ? "Logout" : "Login" }
             </Button>
         </Box>
     );
