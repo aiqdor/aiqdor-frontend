@@ -2,6 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoggedUser } from "../types/LoggedUser"; 
 import { AuthContextType } from "../types/AuthContextType";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const AuthContext = createContext<AuthContextType>(null!);
 export default AuthContext;
@@ -36,6 +38,16 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         if (password === "secret") {
             setUser(loggedUser);
             navigate("/");
+        } else {
+            toast.error('Email ou senha incorreta!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
         }
     };
 
@@ -51,6 +63,17 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             value={{ isAuthenticated: !!user, user, loading, login, logout }}
         >
             {children}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </AuthContext.Provider>
     );
 };
