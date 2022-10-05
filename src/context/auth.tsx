@@ -1,4 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
+import firebase from "firebase/app";
+import { auth } from "../firebaseSetup";
 import { useNavigate } from "react-router-dom";
 import { LoggedUser } from "../types/LoggedUser"; 
 import { AuthContextType } from "../types/AuthContextType";
@@ -10,17 +12,24 @@ export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState<LoggedUser | null>(null);
+    const [user, setUser] = useState<firebase.User  | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Retrieve the user from localStorage if it exists
-        const user = localStorage.getItem("user");
-        if (user) {
-            setUser(JSON.parse(user));
-        } 
+        const unsubscribe = auth.onAuthStateChanged((firebaseUser: firebase) => {
+            setUser(firebaseUser);
+        });
 
-        setLoading(false);
+        return unsubscribe;
+
+        
+        // // Retrieve the user from localStorage if it exists
+        // const user = localStorage.getItem("user");
+        // if (user) {
+        //     setUser(JSON.parse(user));
+        // } 
+
+        // setLoading(false);
     }, []);
 
     const login = (email: string, password: string) => {
