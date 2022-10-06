@@ -12,14 +12,15 @@ export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState<firebase.User  | null>(null);
+    const [user, setUser] = useState<firebase.User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((firebaseUser: firebase) => {
+        const unsubscribe = auth.onAuthStateChanged((firebaseUser: any) => {
             setUser(firebaseUser);
         });
 
+        setLoading(false);
         return unsubscribe;
 
         
@@ -32,40 +33,83 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         // setLoading(false);
     }, []);
 
-    const login = (email: string, password: string) => {
-        console.log("login auth", { email, password });
+    const login = async (email: string, password: string) => {
+        // console.log("login auth", { email, password });
 
-        const loggedUser = {
-            id: "123",
-            name: "jorgin",
-            email,
-            token: "assa"
-        };
+        // const loggedUser = {
+        //     id: "123",
+        //     name: "jorgin",
+        //     email,
+        //     token: "assa"
+        // };
 
-        localStorage.setItem("user", JSON.stringify(loggedUser));
+        // localStorage.setItem("user", JSON.stringify(loggedUser));
 
-        if (password === "secret") {
-            setUser(loggedUser);
+        // if (password === "secret") {
+        //     setUser(loggedUser);
+        //     navigate("/");
+        // } else {
+        //     toast.error('Email ou senha incorreta!', {
+        //         position: "top-right",
+        //         autoClose: 2000,
+        //         hideProgressBar: false,
+        //         closeOnClick: true,
+        //         pauseOnHover: true,
+        //         draggable: true,
+        //         progress: undefined,
+        //         });
+        // }
+
+        try {
+            await auth.signInWithEmailAndPassword(
+              email,
+              password
+            );
+
+            // const loggedUser = {
+            //     id: auth.currentUser?.uid,
+            //     name: auth.currentUser?.displayName,
+            //     email,
+            //     token: auth.currentUser?.refreshToken 
+            // };
+
+            // localStorage.setItem("user", JSON.stringify(loggedUser));
+
+            // setUser(loggedUser);
+            setUser(auth.currentUser);
             navigate("/");
-        } else {
+          } catch (error) {
             toast.error('Email ou senha incorreta!', {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                });
-        }
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        });
+          }
     };
 
-    const logout = () => {
-        console.log("logout");
-        localStorage.removeItem("user");
+    const logout = async () => {
+        // console.log("logout");
+        // localStorage.removeItem("user");
+        await auth.signOut();
         setUser(null);
         navigate("/");
     };
+
+
+    // const createAccount = async (email: string, password: string) => {
+    //     try {
+    //     await auth.createUserWithEmailAndPassword(
+    //         email,
+    //         password
+    //     );
+    //     } catch (error) {
+    //     console.error(error);
+    //     }
+    // };
 
     return (
         <AuthContext.Provider
