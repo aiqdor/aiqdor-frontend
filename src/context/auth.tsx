@@ -16,66 +16,23 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((firebaseUser: any) => {
-            setUser(firebaseUser);
-        });
+        // Retrieve the user from localStorage if it exists
+        const user = localStorage.getItem("authUser");
+        if (user) {
+            setUser(JSON.parse(user));
+        } 
 
         setLoading(false);
-        return unsubscribe;
-
-        
-        // // Retrieve the user from localStorage if it exists
-        // const user = localStorage.getItem("user");
-        // if (user) {
-        //     setUser(JSON.parse(user));
-        // } 
-
-        // setLoading(false);
     }, []);
 
     const login = async (email: string, password: string) => {
-        // console.log("login auth", { email, password });
-
-        // const loggedUser = {
-        //     id: "123",
-        //     name: "jorgin",
-        //     email,
-        //     token: "assa"
-        // };
-
-        // localStorage.setItem("user", JSON.stringify(loggedUser));
-
-        // if (password === "secret") {
-        //     setUser(loggedUser);
-        //     navigate("/");
-        // } else {
-        //     toast.error('Email ou senha incorreta!', {
-        //         position: "top-right",
-        //         autoClose: 2000,
-        //         hideProgressBar: false,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //         });
-        // }
-
         try {
             await auth.signInWithEmailAndPassword(
               email,
               password
             );
 
-            // const loggedUser = {
-            //     id: auth.currentUser?.uid,
-            //     name: auth.currentUser?.displayName,
-            //     email,
-            //     token: auth.currentUser?.refreshToken 
-            // };
-
-            // localStorage.setItem("user", JSON.stringify(loggedUser));
-
-            // setUser(loggedUser);
+            localStorage.setItem('authUser', JSON.stringify(auth.currentUser));
             setUser(auth.currentUser);
             navigate("/");
           } catch (error) {
@@ -92,8 +49,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     };
 
     const logout = async () => {
-        // console.log("logout");
-        // localStorage.removeItem("user");
+        localStorage.removeItem('authUser');
         await auth.signOut();
         setUser(null);
         navigate("/");
