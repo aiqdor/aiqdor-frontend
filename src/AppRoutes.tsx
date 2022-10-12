@@ -7,10 +7,10 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import AuthContext, { AuthProvider } from "./context/auth";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-
-import AuthContext, { AuthProvider } from "./context/auth";
+import RegisterPage from "./pages/RegisterPage";
 
 const AppRoutes = () => {
   const Private = ( { children }: { children: JSX.Element } )  => {
@@ -33,6 +33,7 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Private><HomePage /></Private>} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
         </Routes>
       </AuthProvider>
     </Router>

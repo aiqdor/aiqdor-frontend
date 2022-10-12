@@ -55,21 +55,57 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         navigate("/");
     };
 
+    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string) => {
+        if (password !== confirmPassword) {
+            toast.error('As senhas não conferem!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+            return;
+        }
+        
+        try {
+            await auth.createUserWithEmailAndPassword(
+                email,
+                password
+            );
 
-    // const createAccount = async (email: string, password: string) => {
-    //     try {
-    //     await auth.createUserWithEmailAndPassword(
-    //         email,
-    //         password
-    //     );
-    //     } catch (error) {
-    //     console.error(error);
-    //     }
-    // };
+            // const loggedUser: LoggedUser = {
+            //     firstName: firstName,
+            //     lastName: lastName,
+            //     email: email,
+            //     phoneNumber: phoneNumber,
+            //     uid: auth.currentUser?.uid,
+            // };
+
+            await auth.currentUser?.updateProfile({
+                displayName: firstName + " " + lastName,
+            });
+
+            toast.success('Conta criada com sucesso!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+            navigate("/login");
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated: !!user, user, loading, login, logout }}
+            value={{ isAuthenticated: !!user, user, loading, login, logout, createAccount }}
         >
             {children}
             <ToastContainer
