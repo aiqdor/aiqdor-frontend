@@ -1,11 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
 import firebase from "firebase/app";
-import { auth } from "../firebaseSetup";
+import { auth, db } from "../firebaseSetup"
 import { useNavigate } from "react-router-dom";
 import { LoggedUser } from "../types/LoggedUser"; 
 import { AuthContextType } from "../types/AuthContextType";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DoorBackOutlined } from "@mui/icons-material";
 
 export const AuthContext = createContext<AuthContextType>(null!);
 export default AuthContext;
@@ -73,15 +74,17 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await auth.createUserWithEmailAndPassword(
                 email,
                 password
-            );
-
-            // const loggedUser: LoggedUser = {
-            //     firstName: firstName,
-            //     lastName: lastName,
-            //     email: email,
-            //     phoneNumber: phoneNumber,
-            //     uid: auth.currentUser?.uid,
-            // };
+            ).then((userCredential) => {
+                const user = userCredential.user;            
+                db.collection("users").doc(user?.uid).set({
+                    firstName,
+                    lastName,
+                    email,
+                    phoneNumber,
+                    createdAt: new Date(),
+                    admin: false,
+                });
+            });
 
             await auth.currentUser?.updateProfile({
                 displayName: firstName + " " + lastName,
