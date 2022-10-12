@@ -1,4 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
+import firebase from "firebase/app";
+import { auth } from "../firebaseSetup";
 import { useNavigate } from "react-router-dom";
 import { LoggedUser } from "../types/LoggedUser"; 
 import { AuthContextType } from "../types/AuthContextType";
@@ -10,12 +12,12 @@ export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState<LoggedUser | null>(null);
+    const [user, setUser] = useState<firebase.User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Retrieve the user from localStorage if it exists
-        const user = localStorage.getItem("user");
+        const user = localStorage.getItem("authUser");
         if (user) {
             setUser(JSON.parse(user));
         } 
@@ -23,23 +25,39 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         setLoading(false);
     }, []);
 
-    const login = (email: string, password: string) => {
-        console.log("login auth", { email, password });
+    const login = async (email: string, password: string) => {
+        try {
+            await auth.signInWithEmailAndPassword(
+              email,
+              password
+            );
 
-        const loggedUser = {
-            id: "123",
-            name: "jorgin",
-            email,
-            token: "assa"
-        };
-
-        localStorage.setItem("user", JSON.stringify(loggedUser));
-
-        if (password === "secret") {
-            setUser(loggedUser);
+            localStorage.setItem('authUser', JSON.stringify(auth.currentUser));
+            setUser(auth.currentUser);
             navigate("/");
-        } else {
+          } catch (error) {
             toast.error('Email ou senha incorreta!', {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        });
+          }
+    };
+
+    const logout = async () => {
+        localStorage.removeItem('authUser');
+        await auth.signOut();
+        setUser(null);
+        navigate("/");
+    };
+
+    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string) => {
+        if (password !== confirmPassword) {
+            toast.error('As senhas não conferem!', {
                 position: "top-right",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -48,19 +66,46 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 draggable: true,
                 progress: undefined,
                 });
+            return;
         }
-    };
+        
+        try {
+            await auth.createUserWithEmailAndPassword(
+                email,
+                password
+            );
 
-    const logout = () => {
-        console.log("logout");
-        localStorage.removeItem("user");
-        setUser(null);
-        navigate("/");
+            // const loggedUser: LoggedUser = {
+            //     firstName: firstName,
+            //     lastName: lastName,
+            //     email: email,
+            //     phoneNumber: phoneNumber,
+            //     uid: auth.currentUser?.uid,
+            // };
+
+            await auth.currentUser?.updateProfile({
+                displayName: firstName + " " + lastName,
+            });
+
+            toast.success('Conta criada com sucesso!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+            navigate("/login");
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated: !!user, user, loading, login, logout }}
+            value={{ isAuthenticated: !!user, user, loading, login, logout, createAccount }}
         >
             {children}
             <ToastContainer
