@@ -98,6 +98,7 @@ const RegisterPage = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    error={password.length > 0 && password.length < 6}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
@@ -118,7 +119,8 @@ const RegisterPage = () => {
                 />
             </FormControl>
             <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">
+                <InputLabel htmlFor="outlined-adornment-password"
+                >
                     Confirme a Senha
                 </InputLabel>
                 <OutlinedInput
@@ -126,6 +128,7 @@ const RegisterPage = () => {
                     type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    error={password.length > 0 && confirmPassword !== password}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
