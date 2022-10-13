@@ -1,1 +1,0 @@
-# aiqdor-frontend
