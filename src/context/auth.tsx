@@ -14,6 +14,7 @@ export default AuthContext;
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState<firebase.User | null>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,6 +23,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         if (user) {
             setUser(JSON.parse(user));
         } 
+
+        const isAdmin = localStorage.getItem("isAdmin");
+        if (isAdmin) {
+            setIsAdmin(JSON.parse(isAdmin));
+        }    
 
         setLoading(false);
     }, []);
@@ -33,9 +39,14 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
               password
             );
 
+            const userData = await db.collection("users").doc(auth.currentUser?.uid).get();
+            const userInfo = userData.data() as LoggedUser;
+            setIsAdmin(userInfo.admin);
+
+            localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));
             localStorage.setItem('authUser', JSON.stringify(auth.currentUser));
             setUser(auth.currentUser);
-            navigate("/");
+            navigate(isAdmin ? "/admin" : "/");
           } catch (error) {
             toast.error('Email ou senha incorreta!', {
                         position: "top-right",
@@ -108,7 +119,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated: !!user, user, loading, login, logout, createAccount }}
+            value={{ isAuthenticated: !!user, isAdmin, user, loading, login, logout, createAccount }}
         >
             {children}
             <ToastContainer
