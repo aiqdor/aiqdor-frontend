@@ -49,6 +49,7 @@ const LoginPage = () => {
         >
             <TextField
                 required
+                autoComplete="email"
                 id="outlined-required"
                 label="Email"
                 type="email"

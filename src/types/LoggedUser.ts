@@ -1,6 +1,8 @@
 export type LoggedUser = {
-    id: string;
-    name: string;
+    admin: boolean;
     email: string;
-    token: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    createdAt: string;
 }
