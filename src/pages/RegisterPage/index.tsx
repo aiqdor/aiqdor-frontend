@@ -12,6 +12,9 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
+    Stack,
+    Switch,
+    Typography,
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 
@@ -24,6 +27,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [isOwner, setIsOwner] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -39,7 +43,7 @@ const RegisterPage = () => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        createAccount(firstName, lastName, email, password, confirmPassword, phoneNumber);
+        createAccount(firstName, lastName, email, password, confirmPassword, phoneNumber, isOwner);
     };
 
     return (
@@ -147,7 +151,18 @@ const RegisterPage = () => {
                     }
                     label="Confirme a Senha"
                 />
-            </FormControl>
+
+                Você é dono de clínica?    
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography>Não</Typography>
+                    <Switch
+                        checked={isOwner}
+                        onChange={() => setIsOwner(!isOwner)}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    <Typography>Sim</Typography>
+                </Stack>
+            </FormControl>        
 
             <Button variant="text" type="submit">
                 Cadastrar

@@ -3,4 +3,5 @@ export type LoggedUser = {
     name: string;
     email: string;
     token: string;
+    isOwner: boolean;
 }

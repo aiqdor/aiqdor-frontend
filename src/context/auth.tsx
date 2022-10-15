@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         navigate("/");
     };
 
-    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string) => {
+    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string, isOwner: boolean) => {
         if (password !== confirmPassword) {
             toast.error('As senhas não conferem!', {
                 position: "top-right",
@@ -83,6 +83,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     phoneNumber,
                     createdAt: new Date(),
                     admin: false,
+                    isOwner,
                 });
             });
 
