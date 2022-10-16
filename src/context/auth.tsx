@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             );
 
             const userData = await db.collection("users").doc(auth.currentUser?.uid).get();
-            const userInfo = userData.data() as LoggedUser;
+            const userInfo = await userData.data() as LoggedUser;
             setIsAdmin(userInfo.admin);
 
             localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));

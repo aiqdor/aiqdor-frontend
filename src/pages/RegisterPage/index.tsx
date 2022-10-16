@@ -8,6 +8,7 @@ import InputMask from "react-input-mask";
 import {
     Button,
     FormControl,
+    Grid,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -17,8 +18,10 @@ import {
     Typography,
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
+    const navigate = useNavigate();
     const { isAuthenticated, login, createAccount } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
@@ -60,112 +63,127 @@ const RegisterPage = () => {
             minHeight="100vh"
             onSubmit={handleSubmit}
         >
-            <TextField
-                required
-                id="outlined-required"
-                label="Primeiro Nome"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-            />
-            <TextField
-                required
-                id="outlined-required"
-                label="Sobrenome"
-                type="text"
-                value={lastName}
-                onChange={(e) => setlastName(e.target.value)}
-            />
-            <TextField
-                required
-                id="outlined-required"
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-                required
-                id="outlined-required"
-                label="Telefone"
-                type="phone"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-
-            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">
-                    Senha
-                </InputLabel>
-                <OutlinedInput
-                    id="outlined-adornment-password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    error={password.length > 0 && password.length < 6}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? (
-                                    <VisibilityOff />
-                                ) : (
-                                    <Visibility />
-                                )}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Senha"
+            <Box>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="Primeiro Nome"
+                    type="text"
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                 />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password"
-                >
-                    Confirme a Senha
-                </InputLabel>
-                <OutlinedInput
-                    id="outlined-adornment-password"
-                    type={showPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    error={password.length > 0 && confirmPassword !== password}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? (
-                                    <VisibilityOff />
-                                ) : (
-                                    <Visibility />
-                                )}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Confirme a Senha"
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="Sobrenome"
+                    type="text"
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(e) => setlastName(e.target.value)}
                 />
+            </Box>
+            
+            <Box>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="Email"
+                    type="email"
+                    value={email}
+                    autoComplete="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="Telefone"
+                    type="phone"
+                    autoComplete="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+            </Box>
 
-                Você é dono de clínica?    
-                <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography>Não</Typography>
-                    <Switch
-                        checked={isOwner}
-                        onChange={() => setIsOwner(!isOwner)}
-                        inputProps={{ 'aria-label': 'controlled' }}
+            <Box>
+                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">
+                        Senha
+                    </InputLabel>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={password.length > 0 && password.length < 6}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? (
+                                        <VisibilityOff />
+                                    ) : (
+                                        <Visibility />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Senha"
                     />
-                    <Typography>Sim</Typography>
-                </Stack>
-            </FormControl>        
+                </FormControl>
+                <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password"
+                    >
+                        Confirme a Senha
+                    </InputLabel>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        error={password.length > 0 && confirmPassword !== password}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? (
+                                        <VisibilityOff />
+                                    ) : (
+                                        <Visibility />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Confirme a Senha"
+                    />
+                </FormControl>     
+            </Box>
 
-            <Button variant="text" type="submit">
+            Você é dono de clínica?    
+            <Stack direction="row" spacing={1} alignItems="center">
+                <Typography>Não</Typography>
+                <Switch
+                    checked={isOwner}
+                    onChange={() => setIsOwner(!isOwner)}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />
+                <Typography>Sim</Typography>
+            </Stack>
+
+            <Button variant="contained" type="submit">
                 Cadastrar
+            </Button>
+
+            <Button variant="text" onClick={() => navigate(-1)}>
+                Voltar
             </Button>
         </Box>
     );
