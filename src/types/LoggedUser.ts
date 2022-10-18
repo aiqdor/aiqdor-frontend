@@ -5,4 +5,5 @@ export type LoggedUser = {
     lastName: string;
     phoneNumber: string;
     createdAt: string;
+    isOwner: boolean;
 }

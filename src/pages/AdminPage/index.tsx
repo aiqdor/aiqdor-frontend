@@ -23,6 +23,7 @@ const AdminPage = () => {
             <Button variant="contained" color="primary" onClick={ handleClick }>
                 { "Logout" }
             </Button>
+            {/* <Button variant="contained" color="primary" onClick={ () => navigate("/user") }> */}
         </Box>
     );
     }

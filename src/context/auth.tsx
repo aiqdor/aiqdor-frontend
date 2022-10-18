@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             );
 
             const userData = await db.collection("users").doc(auth.currentUser?.uid).get();
-            const userInfo = userData.data() as LoggedUser;
+            const userInfo = await userData.data() as LoggedUser;
             setIsAdmin(userInfo.admin);
 
             localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         navigate("/");
     };
 
-    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string) => {
+    const createAccount = async (firstName: string, lastName: string, email: string, password: string, confirmPassword: string, phoneNumber: string, isOwner: boolean) => {
         if (password !== confirmPassword) {
             toast.error('As senhas não conferem!', {
                 position: "top-right",
@@ -94,6 +94,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     phoneNumber,
                     createdAt: new Date(),
                     admin: false,
+                    isOwner,
                 });
             });
 
