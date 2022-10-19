@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 import { Avatar, Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
-import { Clock as ClockIcon } from '../../icons/clock';
-import { Download as DownloadIcon } from '../../icons/download';
 
 export const ClinicCard = ({ clinic, ...rest }) => (
   <Card
@@ -57,7 +55,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
             display: 'flex'
           }}
         >
-          <ClockIcon color="action" />
+          {/* <ClockIcon color="action" /> */}
           <Typography
             color="textSecondary"
             display="inline"
@@ -74,7 +72,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
             display: 'flex'
           }}
         >
-          <DownloadIcon color="action" />
+          {/* <DownloadIcon color="action" /> */}
           <Typography
             color="textSecondary"
             display="inline"

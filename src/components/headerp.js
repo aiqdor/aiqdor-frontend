@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
-export const Header = ({ ...rest }) => (
-    <Header
+export const HeaderP = ({ ...rest }) => (
+    <HeaderP
         sx={{
             backgroundColor: 'background.default',
             boxShadow: 'none',
@@ -13,6 +13,6 @@ export const Header = ({ ...rest }) => (
     />
 );
 
-Header.propTypes = {
-  product: PropTypes.object.isRequired
+HeaderP.propTypes = {
+
 };
