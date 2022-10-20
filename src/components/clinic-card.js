@@ -11,7 +11,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
     {...rest}
   >
     <CardContent>
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -23,14 +23,14 @@ export const ClinicCard = ({ clinic, ...rest }) => (
           src={clinic.media}
           variant="square"
         />
-      </Box>
+      </Box> */}
       <Typography
         align="center"
         color="textPrimary"
         gutterBottom
         variant="h5"
       >
-        {clinic.title}
+        {clinic.name}
       </Typography>
       <Typography
         align="center"
@@ -55,7 +55,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
             display: 'flex'
           }}
         >
-          {/* <ClockIcon color="action" /> */}
+          {/* <ClockIcon color="action" />
           <Typography
             color="textSecondary"
             display="inline"
@@ -63,7 +63,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
             variant="body2"
           >
             Updated 2hr ago
-          </Typography>
+          </Typography> */}
         </Grid>
         <Grid
           item
@@ -79,7 +79,7 @@ export const ClinicCard = ({ clinic, ...rest }) => (
             sx={{ pl: 1 }}
             variant="body2"
           >
-            {clinic.totalDownloads}
+            {clinic.email}
             {' '}
             Downloads
           </Typography>
@@ -90,5 +90,5 @@ export const ClinicCard = ({ clinic, ...rest }) => (
 );
 
 ClinicCard.propTypes = {
-  product: PropTypes.object.isRequired
+  clinic: PropTypes.object.isRequired
 };
