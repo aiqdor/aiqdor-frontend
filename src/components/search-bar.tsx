@@ -10,11 +10,15 @@ const SearchBar = ({}) => {
     return (
         <Box sx={{ my: 2, mx: "auto" }} borderRadius={2} width="30%">
             <Select multiple>
-                <Chip />
+                {options.map((option) => (
+                    <Chip label={option} />
+                ))}
             </Select>
             <TextField variant="outlined"></TextField>
         </Box>
     );
 };
+
+SearchBar.propTypes = { options: PropTypes.array };
 
 export { SearchBar };

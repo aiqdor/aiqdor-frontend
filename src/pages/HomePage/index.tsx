@@ -17,7 +17,6 @@ const HomePage = () => {
     >([]);
 
     //use useEffect to get the clinics
-
     useEffect(() => {
         const getClinics = async () => {
             const clinics = await firebase
@@ -29,6 +28,7 @@ const HomePage = () => {
 
             setClinics(data);
         };
+
         getClinics();
     }, []);
 
@@ -54,7 +54,7 @@ const HomePage = () => {
                     </Button>
                 </Box>
             </MainHeader>
-            <SearchBar />
+            <SearchBar /> 
             <Box
                 sx={{
                     "& .MuiTextField-root": { m: 1, width: "25ch" },
