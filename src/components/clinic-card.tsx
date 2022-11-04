@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const ClinicCard = ({ clinic, ...rest }) => {
-    const openDetails = (id) => {
+const ClinicCard = ({ clinic, ...rest }: { clinic: any }) => {
+    const openDetails = (id: any) => {
         //todo open clinic details page
     };
 
@@ -35,7 +35,11 @@ const ClinicCard = ({ clinic, ...rest }) => {
                         pb: 3,
                     }}
                 >
-                    <Avatar alt="Product" src={clinic.media} variant="rounded" />
+                    <Avatar
+                        alt="Product"
+                        src={clinic.media}
+                        variant="rounded"
+                    />
                 </Box>
                 <Typography
                     align="center"
