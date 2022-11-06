@@ -11,6 +11,7 @@ import AuthContext, { AuthProvider } from "./context/auth";
 import AdminPage from "./pages/AdminPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import ProcedurePage from "./pages/ProcedurePage";
 import RegisterPage from "./pages/RegisterPage";
 
 const AppRoutes = () => {
@@ -58,6 +59,7 @@ const AppRoutes = () => {
                             </Admin>
                         }
                     />
+                    <Route path="procedures" element={<Admin><ProcedurePage /></Admin>}/>
                     <Route path="clinicSettings" element={<AdminPage />} />
                     <Route path="profileSettings" element={<AdminPage />} />
                     <Route

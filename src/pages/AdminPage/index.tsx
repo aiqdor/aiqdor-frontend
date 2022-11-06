@@ -15,15 +15,20 @@ const AdminPage = () => {
     return (
         <Box
             display="flex"
+            flexDirection="column"
             justifyContent="center"
             alignItems="center"
             minHeight="100vh"
         >
             Admin Page
+
             <Button variant="contained" color="primary" onClick={ handleClick }>
                 { "Logout" }
             </Button>
-            {/* <Button variant="contained" color="primary" onClick={ () => navigate("/user") }> */}
+
+            <Button variant="contained" color="primary" onClick={ () => navigate("/procedures") }>
+                { "Procedures" }
+            </Button>
         </Box>
     );
     }
