@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import uuid from "react-uuid";
 import firebase from "firebase/app";
 import {
     Box,
@@ -17,34 +16,40 @@ import {
     Typography,
 } from "@mui/material";
 import { MainHeader } from "../../components/main-header";
+import { Procedure } from "../../types/Procedure";
 
 const ProcedurePage = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState("");
+    const [duration, setDuration] = useState(0);
     const [price, setPrice] = useState("");
+    const [open, setOpen] = useState(false);
+    const [idEdit, setIdEdit] = useState("");
 
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = async (_id: string) => {
-        console.log(_id);
-        if (_id) {
-            const procedure = procedures.find((p) => p.id === _id);
+    const handleOpen = async (id?: string) => {
+        if (id) {
+            const procedure = procedures.find((p) => p.id === id);
             if (procedure) {
                 setName(procedure.name);
                 setDescription(procedure.description);
                 setDuration(procedure.duration);
                 setPrice(procedure.price);
+                setIdEdit(id);
             }
-        } else {
-            setName("");
-            setDescription("");
-            setDuration("");
-            setPrice("");
-        }
+        } 
         setOpen(true);
     };
-    const handleClose = () => setOpen(false);
+
+    const handleClose = () => {
+        setOpen(false);
+        setName("");
+        setDescription("");
+        setDuration(0);
+        setPrice("");
+        setIdEdit("");
+    }
+
     const styleModal = {
         position: "absolute",
         top: "50%",
@@ -56,38 +61,55 @@ const ProcedurePage = () => {
         boxShadow: 24,
         p: 4,
     };
-    const handleSubmit = (e: any) => {
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        firebase.firestore().collection("procedures").add({
-            id: uuid(),
-            name,
-            description,
-            duration,
-            price,
-        });
-        setOpen(false);
-        getProcedures();
+        
+        console.log(idEdit);
+        if (idEdit !== "") {
+            await firebase.firestore().collection("procedures").doc(idEdit).update({
+                name,
+                description,
+                duration,
+                price,
+            });
+        } else {
+            await firebase.firestore().collection("procedures").add({
+                name,
+                description,
+                duration,
+                price,
+            });
+        }
+
+        handleClose();
     };
 
     const deleteProcedure = (id: string) => {
         firebase.firestore().collection("procedures").doc(id).delete();
     };
 
-    const [procedures, setProcedures] = React.useState<
-        firebase.firestore.DocumentData[]
-    >([]);
+    const [procedures, setProcedures] = useState<Procedure[]>([]);
 
     const getProcedures = async () => {
-        const procedures = await firebase
+        firebase
             .firestore()
             .collection("procedures")
-            .get();
-
-        const data = procedures.docs.map((procedure) => procedure.data());
-        setProcedures(data);
+            .onSnapshot((snapshot) => {
+                const procedures: Procedure[] = [];
+                snapshot.forEach((doc) => {
+                    procedures.push({
+                        id: doc.id,
+                        name: doc.data().name,
+                        description: doc.data().description,
+                        duration: doc.data().duration,
+                        price: doc.data().price,
+                    });
+                    setProcedures(procedures);
+                });
+            });
     };
 
-    //use useEffect to get the procedures
     useEffect(() => {
         getProcedures();
     }, []);
@@ -153,7 +175,7 @@ const ProcedurePage = () => {
                             label="Duração (minutos)"
                             type="number"
                             value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
+                            onChange={(e) => setDuration(Number(e.target.value))}
                         />
                         <Button variant="contained" type="submit">
                             Salvar
@@ -246,6 +268,3 @@ const ProcedurePage = () => {
 };
 
 export default ProcedurePage;
-function uuidv4(): any {
-    throw new Error("Function not implemented.");
-}

@@ -1,5 +1,6 @@
 export type Procedure = {
-    name: boolean;
+    id: string;
+    name: string;
     description: string;
     price: string;
     duration: number;
