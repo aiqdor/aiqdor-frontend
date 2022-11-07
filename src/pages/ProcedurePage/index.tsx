@@ -122,7 +122,7 @@ const ProcedurePage = () => {
                 </Button>
             </MainHeader>
 
-            <Button variant="contained" onClick={handleOpen}>
+            <Button variant="contained" onClick={() => handleOpen()}>
                 Adicionar novo procedimento
             </Button>
             <Modal
