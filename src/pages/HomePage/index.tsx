@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth";
@@ -7,28 +7,37 @@ import { MainHeader } from "../../components/main-header";
 import { SearchBar } from "../../components/search-bar";
 
 import firebase from "firebase/app";
+import { Clinic } from "../../types/Clinic";
 
 const HomePage = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [clinics, setClinics] = React.useState<
-        firebase.firestore.DocumentData[]
-    >([]);
+    const [clinics, setClinics] = useState<Clinic[]>([]);
+    const getClinics = async () => {
+        firebase
+            .firestore()
+            .collection("clinics")
+            .onSnapshot((snapshot) => {
+                const clinics: Clinic[] = [];
+                snapshot.forEach((doc) => {
+                    clinics.push({
+                        id: doc.id,
+                        name: doc.data().name,
+                        address: doc.data().address,
+                        phone: doc.data().phone,
+                        email: doc.data().email,
+                        website: doc.data().website,
+                        description: doc.data().description,
+                        mediaUrl: doc.data().mediaUrl,
+                        category: doc.data().category,
+                    });
+                    setClinics(clinics);
+                });
+            });
+    };
 
-    //use useEffect to get the clinics
     useEffect(() => {
-        const getClinics = async () => {
-            const clinics = await firebase
-                .firestore()
-                .collection("clinics")
-                .get();
-
-            const data = clinics.docs.map((clinic) => clinic.data());
-
-            setClinics(data);
-        };
-
         getClinics();
     }, []);
 
@@ -54,7 +63,7 @@ const HomePage = () => {
                     </Button>
                 </Box>
             </MainHeader>
-            <SearchBar /> 
+            <SearchBar />
             <Box
                 sx={{
                     "& .MuiTextField-root": { m: 1, width: "25ch" },
@@ -73,21 +82,17 @@ const HomePage = () => {
                 >
                     {
                         <Grid container spacing={3}>
-                            {clinics.map(
-                                (
-                                    clinic: any //create type clinic
-                                ) => (
-                                    <Grid
-                                        item
-                                        key={clinic.id}
-                                        lg={4}
-                                        md={6}
-                                        xs={12}
-                                    >
-                                        <ClinicCard clinic={clinic} />
-                                    </Grid>
-                                )
-                            )}
+                            {clinics.map((clinic) => (
+                                <Grid
+                                    item
+                                    key={clinic.id}
+                                    lg={4}
+                                    md={6}
+                                    xs={12}
+                                >
+                                    <ClinicCard clinic={clinic} />
+                                </Grid>
+                            ))}
                         </Grid>
                     }
                 </Box>
