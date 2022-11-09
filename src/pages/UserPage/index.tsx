@@ -6,6 +6,8 @@ import {
     Button,
     Modal,
     Paper,
+    Stack,
+    Switch,
     Table,
     TableBody,
     TableCell,
@@ -16,39 +18,39 @@ import {
     Typography,
 } from "@mui/material";
 import { MainHeader } from "../../components/main-header";
-import { Procedure } from "../../types/Procedure";
+import { User } from "../../types/User";
 
-const ProcedurePage = () => {
+const UserPage = () => {
     const navigate = useNavigate();
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(0);
-    const [price, setPrice] = useState("");
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [admin, setAdmin] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
 
     const handleOpen = async (id?: string) => {
         if (id) {
-            const procedure = procedures.find((p) => p.id === id);
-            if (procedure) {
-                setName(procedure.name);
-                setDescription(procedure.description);
-                setDuration(procedure.duration);
-                setPrice(procedure.price);
+            const user = users.find((p) => p.id === id);
+            if (user) {
                 setIdEdit(id);
+                setFirstName(user.firstName);
+                setLastName(user.lastName);
+                setEmail(user.email);
+                setAdmin(user.admin);
+                setIsOwner(user.isOwner);
+                setPhoneNumber(user.phoneNumber);
             }
-        } 
+        }
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
-        setName("");
-        setDescription("");
-        setDuration(0);
-        setPrice("");
         setIdEdit("");
-    }
+    };
 
     const styleModal = {
         position: "absolute",
@@ -64,54 +66,61 @@ const ProcedurePage = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        
+
         console.log(idEdit);
         if (idEdit !== "") {
-            await firebase.firestore().collection("procedures").doc(idEdit).update({
-                name,
-                description,
-                duration,
-                price,
+            await firebase.firestore().collection("users").doc(idEdit).update({
+                firstName,
+                lastName,
+                email,
+                admin,
+                isOwner,
+                phoneNumber,
             });
         } else {
-            await firebase.firestore().collection("procedures").add({
-                name,
-                description,
-                duration,
-                price,
+            await firebase.firestore().collection("users").add({
+                firstName,
+                lastName,
+                email,
+                admin,
+                isOwner,
+                phoneNumber,
             });
         }
 
         handleClose();
     };
 
-    const deleteProcedure = (id: string) => {
-        firebase.firestore().collection("procedures").doc(id).delete();
+    const deleteUser = (id: string) => {
+        firebase.firestore().collection("users").doc(id).delete();
     };
 
-    const [procedures, setProcedures] = useState<Procedure[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
 
-    const getProcedures = async () => {
+    const getUsers = async () => {
         firebase
             .firestore()
-            .collection("procedures")
+            .collection("users")
             .onSnapshot((snapshot) => {
-                const procedures: Procedure[] = [];
+                const users: User[] = [];
                 snapshot.forEach((doc) => {
-                    procedures.push({
+                    users.push({
                         id: doc.id,
-                        name: doc.data().name,
-                        description: doc.data().description,
-                        duration: doc.data().duration,
-                        price: doc.data().price,
+                        firstName: doc.data().firstName,
+                        lastName: doc.data().lastName,
+                        email: doc.data().email,
+                        admin: doc.data().admin,
+                        isOwner: doc.data().isOwner,
+                        phoneNumber: doc.data().phoneNumber,
+                        createdAt: doc.data().createdAt,
                     });
-                    setProcedures(procedures);
+                    setUsers(users);
                 });
             });
     };
 
     useEffect(() => {
-        getProcedures();
+        getUsers();
     }, []);
 
     return (
@@ -123,7 +132,7 @@ const ProcedurePage = () => {
             </MainHeader>
 
             <Button variant="contained" onClick={() => handleOpen()}>
-                Adicionar Procedimento
+                Adicionar Usuário
             </Button>
             <Modal
                 open={open}
@@ -144,39 +153,59 @@ const ProcedurePage = () => {
                         alignItems="center"
                         onSubmit={handleSubmit}
                     >
-                        <Typography variant="h4">Procedimento</Typography>
+                        <Typography variant="h4">Usuário</Typography>
                         <TextField
                             required
                             id="outlined-required"
-                            label="Nome"
+                            label="Primeiro nome"
                             type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
                         />
                         <TextField
                             required
                             id="outlined-required"
-                            label="Descrição"
+                            label="Último nome"
                             type="text"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
                         />
                         <TextField
                             required
                             id="outlined-required"
-                            label="Preço"
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Telefone"
                             type="text"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                         />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Duração (minutos)"
-                            type="number"
-                            value={duration}
-                            onChange={(e) => setDuration(Number(e.target.value))}
-                        />
+                        Dono de clínica? 
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Typography>Não</Typography>
+                            <Switch
+                                checked={isOwner}
+                                onChange={() => setIsOwner(!isOwner)}
+                                inputProps={{ "aria-label": "controlled" }}
+                            />
+                            <Typography>Sim</Typography>
+                        </Stack>
+                        Administrador?
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Typography>Não</Typography>    
+                            <Switch
+                                checked={admin}
+                                onChange={() => setAdmin(!admin)}
+                                inputProps={{ "aria-label": "controlled" }}
+                            />
+                            <Typography>Sim</Typography>
+                        </Stack>
                         <Button variant="contained" type="submit">
                             Salvar
                         </Button>
@@ -184,7 +213,7 @@ const ProcedurePage = () => {
                 </Box>
             </Modal>
 
-            <h1>Procedimentos</h1>
+            <h1>Usuários</h1>
             <Box
                 sx={{ pt: 3 }}
                 flexDirection="column"
@@ -201,45 +230,47 @@ const ProcedurePage = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Nome</TableCell>
+                                    <TableCell align="right">Email</TableCell>
                                     <TableCell align="right">
-                                        Descrição
+                                        Telefone
                                     </TableCell>
+                                    <TableCell align="right">Admin</TableCell>
                                     <TableCell align="right">
-                                        Preço&nbsp;(R$)
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        Duração&nbsp;(min)
+                                        Dono de Clínica
                                     </TableCell>
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {procedures.map((procedure) => (
+                                {users.map((user) => (
                                     <TableRow
-                                        key={procedure.id}
+                                        key={user.id}
                                         sx={{
                                             "&:last-child td, &:last-child th":
                                                 { border: 0 },
                                         }}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {procedure.name}
+                                            {user.firstName} {user.lastName}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {procedure.description}
+                                            {user.email}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {procedure.price}
+                                            {user.phoneNumber}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {procedure.duration}
+                                            {user.admin ? "Sim" : "Não"}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            {user.isOwner ? "Sim" : "Não"}
                                         </TableCell>
                                         <TableCell align="right">
                                             <Button
                                                 size="small"
                                                 color="primary"
                                                 onClick={() =>
-                                                    handleOpen(procedure.id)
+                                                    handleOpen(user.id)
                                                 }
                                             >
                                                 Editar
@@ -248,9 +279,7 @@ const ProcedurePage = () => {
                                                 size="small"
                                                 color="primary"
                                                 onClick={() =>
-                                                    deleteProcedure(
-                                                        procedure.id
-                                                    )
+                                                    deleteUser(user.id)
                                                 }
                                             >
                                                 Deletar
@@ -267,4 +296,4 @@ const ProcedurePage = () => {
     );
 };
 
-export default ProcedurePage;
+export default UserPage;

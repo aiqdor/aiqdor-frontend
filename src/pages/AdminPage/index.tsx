@@ -29,6 +29,9 @@ const AdminPage = () => {
             <Button variant="contained" color="primary" onClick={ () => navigate("/procedures") }>
                 { "Procedures" }
             </Button>
+            <Button variant="contained" color="primary" onClick={ () => navigate("/users") }>
+                { "Usuários" }
+            </Button>
         </Box>
     );
     }
