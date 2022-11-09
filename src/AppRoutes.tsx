@@ -13,6 +13,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ProcedurePage from "./pages/ProcedurePage";
 import RegisterPage from "./pages/RegisterPage";
+import UserPage from "./pages/UserPage";
 
 const AppRoutes = () => {
     const Private = ({ children }: { children: JSX.Element }) => {
@@ -60,6 +61,7 @@ const AppRoutes = () => {
                         }
                     />
                     <Route path="procedures" element={<Admin><ProcedurePage /></Admin>}/>
+                    <Route path="users" element={<Admin><UserPage /></Admin>}/>
                     <Route path="clinicSettings" element={<AdminPage />} />
                     <Route path="profileSettings" element={<AdminPage />} />
                     <Route
