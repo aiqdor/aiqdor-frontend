@@ -8,4 +8,5 @@ export type Clinic = {
     description: string;
     mediaUrl: string;
     category: string;
+    acceptsInsurance: boolean;
 }

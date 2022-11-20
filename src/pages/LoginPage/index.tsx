@@ -12,6 +12,10 @@ const LoginPage = () => {
     const { isAuthenticated, login } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    if (isAuthenticated) {
+        navigate("/");
+    }
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
