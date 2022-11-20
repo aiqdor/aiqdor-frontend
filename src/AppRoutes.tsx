@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useContext } from "react";
 
 import {
     BrowserRouter as Router,
@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import ProcedurePage from "./pages/ProcedurePage";
 import RegisterPage from "./pages/RegisterPage";
 import UserPage from "./pages/UserPage";
+import ClinicPage from "./pages/ClinicPage";
 
 const AppRoutes = () => {
     const Private = ({ children }: { children: JSX.Element }) => {
@@ -48,8 +49,37 @@ const AppRoutes = () => {
         <Router>
             <AuthProvider>
                 <Routes>
-                    {/* <Route path="/" element={<Private><HomePage /></Private>} /> */}
                     <Route path="/" element={<HomePage />} />
+                    <Route
+                        path="clinic/:id"
+                        element={
+                            <Private>
+                                <ClinicPage />
+                            </Private>
+                        }
+                    />
+                    <Route
+                        path="procedures"
+                        element={
+                            <Admin>
+                                <ProcedurePage />
+                            </Admin>
+                        }
+                    />
+                    <Route
+                        path="users"
+                        element={
+                            <Admin>
+                                <UserPage />
+                            </Admin>
+                        }
+                    />
+                    <Route path="clinicSettings" element={<AdminPage />} />
+                    <Route path="profileSettings" element={<AdminPage />} />
+                    <Route
+                        path="consultationSettings"
+                        element={<AdminPage />}
+                    />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<RegisterPage />} />
                     <Route
@@ -59,14 +89,6 @@ const AppRoutes = () => {
                                 <AdminPage />
                             </Admin>
                         }
-                    />
-                    <Route path="procedures" element={<Admin><ProcedurePage /></Admin>}/>
-                    <Route path="users" element={<Admin><UserPage /></Admin>}/>
-                    <Route path="clinicSettings" element={<AdminPage />} />
-                    <Route path="profileSettings" element={<AdminPage />} />
-                    <Route
-                        path="consultationSettings"
-                        element={<AdminPage />}
                     />
                 </Routes>
             </AuthProvider>
