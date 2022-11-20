@@ -48,16 +48,6 @@ const ClinicSimpleRegisterPage = () => {
             idCity: selectedCity?.id,
         });
 
-        // await firebase.firestore().collection("addresses").add({
-        //     idUser: firebase.auth().currentUser?.uid,
-        //     street: addressStreet,
-        //     number: addressNumber,
-        //     complement: addressComplement,
-        //     cep,
-        //     idState: selectedState?.id,
-        //     idCity: selectedCity?.id,
-        // });
-
         navigate("/");
     };
 
@@ -94,9 +84,9 @@ const ClinicSimpleRegisterPage = () => {
         setStates(states);
     };
 
-    const loadCities = async (ufState: number) => {
+    const loadCities = async (stateUF: string) => {
         const response = await fetch(
-            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${ufState}/municipios`
+            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateUF}/municipios`
         );
         const data = await response.json();
         const cities: City[] = [];
@@ -191,13 +181,15 @@ const ClinicSimpleRegisterPage = () => {
                     <Select
                         label="Estado"
                         value={selectedState}
-                        onChange={(e) => loadCities(e.target.value)}
                     >
                         {states.map((state) => (
                             <MenuItem
                                 key={state.uf}
                                 value={state.uf}
-                                onClick={() => setSelectedState(state)}
+                                onClick={() => {
+                                    setSelectedState(state)
+                                    loadCities(state.uf)
+                                }}
                             >
                                 {state.uf}
                             </MenuItem>
