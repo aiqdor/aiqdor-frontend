@@ -104,6 +104,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 displayName: firstName + " " + lastName,
             });
 
+            login(email, password);           
+
             toast.success('Conta criada com sucesso!', {
                 position: "top-right",
                 autoClose: 2000,
@@ -114,7 +116,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 progress: undefined,
             });
 
-            navigate("/login");
+            if (isOwner) {
+                navigate("/clinicRegisterS");
+            } else {    
+                navigate("/");
+            }
         } catch (error) {
             console.error(error);
         }

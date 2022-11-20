@@ -9,6 +9,8 @@ import {
 
 import AuthContext, { AuthProvider } from "./context/auth";
 import AdminPage from "./pages/AdminPage";
+import ClinicSimpleRegisterPage from "./pages/ClinicSimpleRegister";
+import ExpertisePage from "./pages/ExpertisePage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ProcedurePage from "./pages/ProcedurePage";
@@ -61,6 +63,8 @@ const AppRoutes = () => {
                         }
                     />
                     <Route path="procedures" element={<Admin><ProcedurePage /></Admin>}/>
+                    <Route path="expertises" element={<Admin><ExpertisePage /></Admin>}/>
+                    <Route path="clinicRegisterS" element={<Private><ClinicSimpleRegisterPage /></Private>}/>
                     <Route path="users" element={<Admin><UserPage /></Admin>}/>
                     <Route path="clinicSettings" element={<AdminPage />} />
                     <Route path="profileSettings" element={<AdminPage />} />
