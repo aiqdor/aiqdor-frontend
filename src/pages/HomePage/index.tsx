@@ -25,6 +25,7 @@ const HomePage = () => {
                         description: doc.data().description,
                         mediaUrl: doc.data().mediaUrl,
                         category: doc.data().category,
+                        acceptsInsurance: false
                     });
                     setClinics(clinics);
                 });
@@ -35,31 +36,9 @@ const HomePage = () => {
         getClinics();
     }, []);
 
-    const debounce = (func: Function, delay: Number = 500) => {
-        let timerId;
-        return (...args) => {
-            clearTimeout(timerId);
-            timerId = setTimeout(() => {
-                func.apply(this, args);
-            }, delay);
-        };
-    };
-
-    const handleClinicSearchBlur = (e: FocusEvent) => {
-        getClinics(e.target.value);
-    };
-
-    const debouceClinicSearch = debounce(handleClinicSearchBlur);
-
     return (
         <Box>
             <MainHeader />
-            {/* <Box sx={{ my: 2, mx: "auto" }} borderRadius={2} width="30%">
-                <TextField
-                    onBlur={debouceClinicSearch}
-                    variant="outlined"
-                ></TextField>
-            </Box> */}
             <Box
                 sx={{
                     "& .MuiTextField-root": { m: 1, width: "25ch" },

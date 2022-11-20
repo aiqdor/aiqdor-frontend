@@ -31,16 +31,16 @@ const ClinicPage = () => {
             .onSnapshot((snapshot) => {
                 const clinic = {
                     id: snapshot.id,
-                    name: snapshot.data().name,
-                    address: snapshot.data().address,
-                    phone: snapshot.data().phone,
-                    email: snapshot.data().email,
-                    website: snapshot.data().website,
-                    description: snapshot.data().description,
-                    mediaUrl: snapshot.data().mediaUrl,
-                    category: snapshot.data().category,
-                    location: snapshot.data().location,
-                    acceptsInsurance: snapshot.data().acceptsInsurance,
+                    name: snapshot?.data()?.name,
+                    address: snapshot?.data()?.address,
+                    phone: snapshot?.data()?.phone,
+                    email: snapshot?.data()?.email,
+                    website: snapshot?.data()?.website,
+                    description: snapshot?.data()?.description,
+                    mediaUrl: snapshot?.data()?.mediaUrl,
+                    category: snapshot?.data()?.category,
+                    location: snapshot?.data()?.location,
+                    acceptsInsurance: snapshot?.data()?.acceptsInsurance,
                 };
                 setClinic(clinic);
             });
@@ -55,10 +55,11 @@ const ClinicPage = () => {
                 const procedures: Procedure[] = [];
                 snapshot.forEach((doc) => {
                     procedures.push({
-                        id: doc.id,
-                        name: doc.data().name,
-                        description: doc.data().description,
-                        price: doc.data().price,
+                        id: doc?.id,
+                        name: doc?.data()?.name,
+                        description: doc?.data()?.description,
+                        price: doc?.data()?.price,
+                        duration: doc?.data()?.duration,
                     });
                     setProcedures(procedures);
                 });
@@ -258,6 +259,18 @@ const ClinicPage = () => {
                     </Box>
                 </Container>
             </div>
+        );
+    } else {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                Carregando...
+            </Box>
         );
     }
 };
