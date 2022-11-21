@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useContext } from "react";
 
 import {
     BrowserRouter as Router,
@@ -16,6 +16,7 @@ import LoginPage from "./pages/LoginPage";
 import ProcedurePage from "./pages/ProcedurePage";
 import RegisterPage from "./pages/RegisterPage";
 import UserPage from "./pages/UserPage";
+import ClinicPage from "./pages/ClinicPage";
 
 const AppRoutes = () => {
     const Private = ({ children }: { children: JSX.Element }) => {
@@ -51,13 +52,27 @@ const AppRoutes = () => {
             <AuthProvider>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="login" element={<LoginPage />} />
-                    <Route path="register" element={<RegisterPage />} />
                     <Route
-                        path="admin"
+                        path="clinic/:id"
+                        element={
+                            <Private>
+                                <ClinicPage />
+                            </Private>
+                        }
+                    />
+                    <Route
+                        path="procedures"
                         element={
                             <Admin>
-                                <AdminPage />
+                                <ProcedurePage />
+                            </Admin>
+                        }
+                    />
+                    <Route
+                        path="users"
+                        element={
+                            <Admin>
+                                <UserPage />
                             </Admin>
                         }
                     />
@@ -70,6 +85,16 @@ const AppRoutes = () => {
                     <Route
                         path="consultationSettings"
                         element={<AdminPage />}
+                    />
+                    <Route path="login" element={<LoginPage />} />
+                    <Route path="register" element={<RegisterPage />} />
+                    <Route
+                        path="admin"
+                        element={
+                            <Admin>
+                                <AdminPage />
+                            </Admin>
+                        }
                     />
                 </Routes>
             </AuthProvider>

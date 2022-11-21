@@ -1,20 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/auth";
+import { useEffect, useState } from "react";
+import { Box, Grid } from "@mui/material";
 import { ClinicCard } from "../../components/clinic-card";
 import { MainHeader } from "../../components/main-header";
-import { SearchBar } from "../../components/search-bar";
 
 import firebase from "firebase/app";
 import { Clinic } from "../../types/Clinic";
 
 const HomePage = () => {
-    const { isAuthenticated, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
-
     const [clinics, setClinics] = useState<Clinic[]>([]);
-    const getClinics = async () => {
+    const getClinics = async (name?: string) => {
         firebase
             .firestore()
             .collection("clinics")
@@ -31,6 +25,7 @@ const HomePage = () => {
                         description: doc.data().description,
                         mediaUrl: doc.data().mediaUrl,
                         category: doc.data().category,
+                        acceptsInsurance: false
                     });
                     setClinics(clinics);
                 });
@@ -41,29 +36,9 @@ const HomePage = () => {
         getClinics();
     }, []);
 
-    const handleClick = () => {
-        if (isAuthenticated) {
-            logout();
-            navigate("/");
-        } else {
-            navigate("/login");
-        }
-    };
-
     return (
-        <div>
-            <MainHeader>
-                <Box>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleClick}
-                    >
-                        {isAuthenticated ? "Logout" : "Login"}
-                    </Button>
-                </Box>
-            </MainHeader>
-            <SearchBar />
+        <Box>
+            <MainHeader />
             <Box
                 sx={{
                     "& .MuiTextField-root": { m: 1, width: "25ch" },
@@ -97,7 +72,7 @@ const HomePage = () => {
                     }
                 </Box>
             </Box>
-        </div>
+        </Box>
     );
 };
 
