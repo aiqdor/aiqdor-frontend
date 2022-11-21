@@ -28,10 +28,9 @@ const MenuIcon = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleAuthButton = () => {
         if (isAuthenticated) {
-            logout();
-            navigate("/");
+            logout(false);
         } else {
             navigate("/login");
         }
@@ -94,17 +93,25 @@ const MenuIcon = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                <MenuItem>
-                    <Avatar /> Perfil
-                </MenuItem>
-                <Divider />
+                {isAuthenticated ? (
+                    <Box>
+                        <MenuItem>
+                            <Avatar /> Perfil
+                        </MenuItem>
+                        <Divider />
+                    </Box>
+                ) : null}
                 <Button>
-                    <MenuItem onClick={handleLogout}>
-                        <ListItemIcon>
-                            <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Sair
-                    </MenuItem>
+                    {isAuthenticated ? (
+                        <MenuItem onClick={handleAuthButton}>
+                            <ListItemIcon>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            Sair
+                        </MenuItem>
+                    ) : (
+                        <MenuItem onClick={handleAuthButton}>Entrar</MenuItem>
+                    )}
                 </Button>
             </Menu>
         </React.Fragment>
