@@ -34,10 +34,10 @@ const ClinicPage = () => {
                     name: snapshot?.data()?.name,
                     address: snapshot?.data()?.address,
                     phone: snapshot?.data()?.phone,
-                    email: snapshot?.data()?.email,
+                    email: snapshot?.da ta()?.email,
                     website: snapshot?.data()?.website,
                     description: snapshot?.data()?.description,
-                    mediaUrl: snapshot?.data()?.mediaUrl,
+                    image: snapshot?.data()?.image,
                     category: snapshot?.data()?.category,
                     location: snapshot?.data()?.location,
                     acceptsInsurance: snapshot?.data()?.acceptsInsurance,
@@ -101,7 +101,7 @@ const ClinicPage = () => {
                             >
                                 <Avatar
                                     alt="Foto clínica"
-                                    src={clinic.mediaUrl}
+                                    src={clinic.image}
                                     variant="square"
                                     sx={{ width: 130, height: 130 }}
                                 />

@@ -25,7 +25,7 @@ const AppRoutes = () => {
         if (loading) {
             return <div>Loading...</div>;
         }
-
+console.log(isAuthenticated)
         if (isAuthenticated) {
             return children;
         } else {
@@ -76,10 +76,30 @@ const AppRoutes = () => {
                             </Admin>
                         }
                     />
-                    <Route path="procedures" element={<Admin><ProcedurePage /></Admin>}/>
-                    <Route path="expertises" element={<Admin><ExpertisePage /></Admin>}/>
-                    <Route path="clinicRegisterS" element={<Private><ClinicSimpleRegisterPage /></Private>}/>
-                    <Route path="users" element={<Admin><UserPage /></Admin>}/>
+                    <Route
+                        path="procedures"
+                        element={
+                            <Admin>
+                                <ProcedurePage />
+                            </Admin>
+                        }
+                    />
+                    <Route
+                        path="expertises"
+                        element={
+                            <Admin>
+                                <ExpertisePage />
+                            </Admin>
+                        }
+                    />
+                    <Route
+                        path="users"
+                        element={
+                            <Admin>
+                                <UserPage />
+                            </Admin>
+                        }
+                    />
                     <Route path="clinicSettings" element={<AdminPage />} />
                     <Route path="profileSettings" element={<AdminPage />} />
                     <Route
@@ -88,6 +108,14 @@ const AppRoutes = () => {
                     />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<RegisterPage />} />
+                    <Route
+                        path="registerClinic"
+                        element={
+                            <Private>
+                                <ClinicSimpleRegisterPage />
+                            </Private>
+                        }
+                    />
                     <Route
                         path="admin"
                         element={

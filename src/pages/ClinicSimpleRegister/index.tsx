@@ -25,7 +25,7 @@ const ClinicSimpleRegisterPage = () => {
     const [description, setDescription] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [expertises, setExpertises] = useState<Expertise[]>([]);
-    const [selectedExpertise, setSelectedExpertise] = useState<Expertise>();
+    const [selectedExpertises, setSelectedExpertises] = useState<string[]>([]);
     const [states, setStates] = useState<State[]>([]);
     const [selectedState, setSelectedState] = useState<State>();
     const [cities, setCities] = useState<City[]>([]);
@@ -33,8 +33,22 @@ const ClinicSimpleRegisterPage = () => {
     const [cep, setCep] = useState("");
     const [addressNumber, setAddressNumber] = useState("");
     const [addressComplement, setAddressComplement] = useState("");
+    const [image, setImage] = useState("");
+    const [acceptInsurance, setAcceptInsurance] = useState(false);
 
-    const handleSubmit = async(e: any) => {
+    const storage = firebase.storage().ref();
+
+    const uploadImage = async (e: any) => {
+        const file = e.target.files[0];
+
+        console.log(file);
+
+        const response = await storage.child(file.name).put(file);
+
+        setImage(await response.ref.getDownloadURL());
+    };
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         await firebase.firestore().collection("clinics").add({
@@ -42,10 +56,12 @@ const ClinicSimpleRegisterPage = () => {
             name,
             website,
             description,
-            phoneNumber,
-            idExpertise: selectedExpertise?.id,
-            idState: selectedState?.id,
-            idCity: selectedCity?.id,
+            phone: phoneNumber,
+            expertises: selectedExpertises?.name,
+            idState: selectedState?.name,
+            idCity: selectedCity?.name,
+            image,
+            acceptInsurance,
         });
 
         navigate("/");
@@ -104,193 +120,249 @@ const ClinicSimpleRegisterPage = () => {
         loadStates();
     }, []);
 
+    const handleBack = () => {
+        navigate("/home");
+    };
+
+    const handleExpertiseSelect = (expertise: Expertise) => {
+        console.log(selectedExpertises, expertise)
+        setSelectedExpertises([...selectedExpertises, expertise.name]);
+    } 
+
     return (
         <Box
-            component="form"
             sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh",
             }}
-            autoComplete="off"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-            onSubmit={handleSubmit}
         >
-            {/* <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="raised-button-file"
-                
-                type="file"
-            />
-            <label htmlFor="raised-button-file">
-                <Button variant="contained" component="span">
-                    Upload
-                </Button>
-            </label>        */}
+            <Box
+                component="form"
+                sx={{
+                    m: "0 auto",
+                    width: "70%",
+                    border: "1px solid #000",
+                    borderRadius: "20px",
+                    boxSizing: "border-box",
+                    textAlign: "center",
+                    gap: 2,
+                }}
+                autoComplete="off"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                onSubmit={handleSubmit}
+            >
+                <Box className="form-separation">
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Nome"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
 
-            <TextField
-                required
-                sx={{ m: 1, width: "100ch" }}
-                id="outlined-required"
-                label="Nome"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Descrição"
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                </Box>
 
-            <TextField
-                required
-                id="outlined-required"
-                label="Descrição"
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <Box>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">
-                        Especialização
-                    </InputLabel>
-                    <Select
-                        label="Especialização"
-                        value={selectedExpertise}
-                        sx={{ width: 300 }}
+                <Box
+                    sx={{
+                        width: "50%",
+                    }}
+                >
+                    <FormControl
+                        sx={{
+                            width: "100%",
+                        }}
                     >
-                        {expertises.map((expertise) => (
-                            <MenuItem
-                                key={expertise.id}
-                                value={expertise.id}
-                                onClick={() => setSelectedExpertise(expertise)}
-                            >
-                                {expertise.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                        <InputLabel id="demo-simple-select-label">
+                            Especialização
+                        </InputLabel>
+                        <Select
+                            label="Especialização"
+                            value={selectedExpertises}
+                            multiple
+                        >
+                            {expertises.map((expertise) => (
+                                <MenuItem
+                                    key={expertise.id}
+                                    value={expertise.id}
+                                    onClick={() =>
+                                        handleExpertiseSelect(expertise)
+                                    }
+                                >
+                                    {expertise.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+
+                <Box className="form-separation">
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel id="demo-simple-select-label">
+                            Estado
+                        </InputLabel>
+                        <Select
+                            label="Estado"
+                            value={selectedState}
+                            MenuProps={{
+                                PaperProps: { sx: { maxHeight: 300 } },
+                            }}
+                        >
+                            {states.map((state) => (
+                                <MenuItem
+                                    key={state.uf}
+                                    value={state.uf}
+                                    onClick={() => {
+                                        setSelectedState(state);
+                                        loadCities(state.uf);
+                                    }}
+                                >
+                                    {state.uf}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel id="demo-simple-select-label">
+                            Cidade
+                        </InputLabel>
+                        <Select
+                            autoWidth
+                            label="Cidade"
+                            value={selectedCity}
+                            MenuProps={{
+                                PaperProps: { sx: { maxHeight: 300 } },
+                            }}
+                        >
+                            {cities.map((city) => (
+                                <MenuItem
+                                    key={city.id}
+                                    value={city.id}
+                                    onClick={() => setSelectedCity(city)}
+                                >
+                                    {city.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+
+                <Box className="form-separation">
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="CEP"
+                        type="text"
+                        value={cep}
+                        onChange={(e) => setCep(e.target.value)}
+                    />
+
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Rua"
+                        type="text"
+                        value={addressStreet}
+                        onChange={(e) => setAddressStreet(e.target.value)}
+                    />
+                </Box>
+
+                <Box className="form-separation">
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Número"
+                        type="text"
+                        value={addressNumber}
+                        onChange={(e) => setAddressNumber(e.target.value)}
+                    />
+
+                    <TextField
+                        id="outlined"
+                        label="Complemento"
+                        type="text"
+                        value={addressComplement}
+                        onChange={(e) => setAddressComplement(e.target.value)}
+                    />
+                </Box>
+
+                <Box className="form-separation">
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Telefone"
+                        type="text"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                </Box>
+
+                <Box className="form-separation">
+                    <TextField
+                        id="outlined"
+                        label="Website"
+                        type="text"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                    />
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "50%",
+                    }}>
+                        <Button variant="contained" component="label">
+                            Upload Imagem
+                            <input
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                id="raised-button-file"
+                                type="file"
+                                onInput={(e) => uploadImage(e)}
+                            />
+                        </Button>
+                    </Box>
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 4,
+                    }}
+                >
+                    <Button variant="text" onClick={handleBack}>
+                        Voltar
+                    </Button>
+
+                    <Button variant="contained" type="submit">
+                        Cadastrar
+                    </Button>
+                </Box>
             </Box>
-
-            <Box>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-label">
-                        Estado
-                    </InputLabel>
-                    <Select
-                        label="Estado"
-                        value={selectedState}
-                    >
-                        {states.map((state) => (
-                            <MenuItem
-                                key={state.uf}
-                                value={state.uf}
-                                onClick={() => {
-                                    setSelectedState(state)
-                                    loadCities(state.uf)
-                                }}
-                            >
-                                {state.uf}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-label">
-                        Cidade
-                    </InputLabel>
-                    <Select label="Cidade" value={selectedCity}>
-                        {cities.map((city) => (
-                            <MenuItem
-                                key={city.id}
-                                value={city.id}
-                                onClick={() => setSelectedCity(city)}
-                            >
-                                {city.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Box>
-
-            <Box>
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="CEP"
-                    type="text"
-                    value={cep}
-                    onChange={(e) => setCep(e.target.value)}
-                />
-
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Rua"
-                    type="text"
-                    value={addressStreet}
-                    onChange={(e) => setAddressStreet(e.target.value)}
-                />
-            </Box>
-
-            <Box>
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Número"
-                    type="text"
-                    value={addressNumber}
-                    onChange={(e) => setAddressNumber(e.target.value)}
-                />
-
-                <TextField
-                    id="outlined"
-                    label="Complemento"
-                    type="text"
-                    value={addressComplement}
-                    onChange={(e) => setAddressComplement(e.target.value)}
-                />
-            </Box>
-
-            <Box>
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Telefone"
-                    type="text"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                />
-            </Box>
-
-            <Box>
-                <TextField
-                    id="outlined"
-                    label="Website"
-                    type="text"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                />
-            </Box>
-
-            <Button variant="contained" type="submit">
-                Cadastrar
-            </Button>
-
-            <Button variant="text" onClick={() => navigate(-1)}>
-                Voltar
-            </Button>
         </Box>
     );
 };

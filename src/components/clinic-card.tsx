@@ -23,6 +23,8 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
         navigate(`/clinic/${id}`);
     };
 
+    console.log(clinic)
+
     const clinicDetailsLink = `/clinic/${clinic.id}`;
 
     return (
@@ -62,7 +64,7 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             <Avatar
                                 sx={{ width: 80, height: 80 }}
                                 alt="Foto"
-                                src={clinic.mediaUrl}
+                                src={clinic.image}
                                 variant="rounded"
                             />
                         </Badge>
