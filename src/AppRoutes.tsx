@@ -25,7 +25,7 @@ const AppRoutes = () => {
         if (loading) {
             return <div>Loading...</div>;
         }
-console.log(isAuthenticated)
+
         if (isAuthenticated) {
             return children;
         } else {

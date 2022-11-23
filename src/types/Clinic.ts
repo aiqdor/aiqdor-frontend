@@ -9,6 +9,8 @@ export type Clinic = {
     city: string;
     addressNumber: string;
     expertises: string[];
+    complement: string;
+    idUser: string;
     acceptsInsurance: boolean;
     image: string;
 }

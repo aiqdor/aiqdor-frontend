@@ -64,8 +64,7 @@ const ProcedurePage = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        
-        console.log(idEdit);
+
         if (idEdit !== "") {
             await firebase.firestore().collection("procedures").doc(idEdit).update({
                 name,

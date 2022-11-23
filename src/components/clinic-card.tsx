@@ -23,8 +23,6 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
         navigate(`/clinic/${id}`);
     };
 
-    console.log(clinic)
-
     const clinicDetailsLink = `/clinic/${clinic.id}`;
 
     return (
@@ -83,10 +81,10 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             {clinic.name}
                         </Typography>
                         <Typography color="textPrimary" variant="body1">
-                            {clinic.category}
+                            {clinic?.expertises}
                         </Typography>
                         <Typography noWrap color="textPrimary" variant="body1">
-                            {clinic?.address}
+                            {clinic?.city} , {clinic?.addressNumber}
                         </Typography>
                     </Box>
                 </CardContent>

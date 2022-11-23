@@ -46,21 +46,31 @@ const RegisterPage = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        await createAccount(
-            firstName,
-            lastName,
-            email,
-            password,
-            confirmPassword,
-            phoneNumber,
-            isOwner
-        );
+        try {
+            await createAccount(
+                firstName,
+                lastName,
+                email,
+                password,
+                confirmPassword,
+                phoneNumber,
+                isOwner
+            );
 
-        if (isOwner) {
-            console.log(true);
-            navigate("/registerClinic");
-        } else {
-            navigate("/");
+            if (isOwner) {
+                navigate("/registerClinic");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            console.log(err);
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setPhoneNumber("");
+            setFirstName("");
+            setlastName("");
+            setIsOwner(false);
         }
     };
 

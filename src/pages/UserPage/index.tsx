@@ -67,7 +67,6 @@ const UserPage = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        console.log(idEdit);
         if (idEdit !== "") {
             await firebase.firestore().collection("users").doc(idEdit).update({
                 firstName,
@@ -186,7 +185,7 @@ const UserPage = () => {
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
-                        Dono de clínica? 
+                        Dono de clínica?
                         <Stack direction="row" spacing={1} alignItems="center">
                             <Typography>Não</Typography>
                             <Switch
@@ -198,7 +197,7 @@ const UserPage = () => {
                         </Stack>
                         Administrador?
                         <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography>Não</Typography>    
+                            <Typography>Não</Typography>
                             <Switch
                                 checked={admin}
                                 onChange={() => setAdmin(!admin)}

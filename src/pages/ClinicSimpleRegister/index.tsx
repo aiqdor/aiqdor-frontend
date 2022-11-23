@@ -8,12 +8,14 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
 } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 import firebase from "firebase";
 import { Expertise } from "../../types/Expertise";
 import { State } from "../../types/State";
 import { City } from "../../types/City";
+import ReactInputMask from "react-input-mask";
 
 const ClinicSimpleRegisterPage = () => {
     const navigate = useNavigate();
@@ -56,10 +58,13 @@ const ClinicSimpleRegisterPage = () => {
             name,
             website,
             description,
+            street: addressStreet,
+            addressNumber,
+            complement: addressComplement,
             phone: phoneNumber,
-            expertises: selectedExpertises?.name,
-            idState: selectedState?.name,
-            idCity: selectedCity?.name,
+            expertises: selectedExpertises,
+            state: selectedState?.name,
+            city: selectedCity?.name,
             image,
             acceptInsurance,
         });
@@ -124,10 +129,16 @@ const ClinicSimpleRegisterPage = () => {
         navigate("/home");
     };
 
-    const handleExpertiseSelect = (expertise: Expertise) => {
-        console.log(selectedExpertises, expertise)
-        setSelectedExpertises([...selectedExpertises, expertise.name]);
-    } 
+    const handleExpertiseSelect = (event: SelectChangeEvent) => {
+        const {
+            target: { value },
+        } = event;
+        console.log(value, event);
+        setSelectedExpertises(
+            typeof value === "string" ? value.split(",") : value
+        );
+        console.log(selectedExpertises);
+    };
 
     return (
         <Box
@@ -143,9 +154,6 @@ const ClinicSimpleRegisterPage = () => {
                 sx={{
                     m: "0 auto",
                     width: "70%",
-                    border: "1px solid #000",
-                    borderRadius: "20px",
-                    boxSizing: "border-box",
                     textAlign: "center",
                     gap: 2,
                 }}
@@ -158,6 +166,9 @@ const ClinicSimpleRegisterPage = () => {
             >
                 <Box className="form-separation">
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Nome"
@@ -167,6 +178,9 @@ const ClinicSimpleRegisterPage = () => {
                     />
 
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Descrição"
@@ -193,14 +207,12 @@ const ClinicSimpleRegisterPage = () => {
                             label="Especialização"
                             value={selectedExpertises}
                             multiple
+                            onChange={handleExpertiseSelect}
                         >
                             {expertises.map((expertise) => (
                                 <MenuItem
                                     key={expertise.id}
                                     value={expertise.id}
-                                    onClick={() =>
-                                        handleExpertiseSelect(expertise)
-                                    }
                                 >
                                     {expertise.name}
                                 </MenuItem>
@@ -210,7 +222,11 @@ const ClinicSimpleRegisterPage = () => {
                 </Box>
 
                 <Box className="form-separation">
-                    <FormControl sx={{ minWidth: 200 }}>
+                    <FormControl
+                        sx={{
+                            width: "40%",
+                        }}
+                    >
                         <InputLabel id="demo-simple-select-label">
                             Estado
                         </InputLabel>
@@ -236,7 +252,11 @@ const ClinicSimpleRegisterPage = () => {
                         </Select>
                     </FormControl>
 
-                    <FormControl sx={{ minWidth: 200 }}>
+                    <FormControl
+                        sx={{
+                            width: "40%",
+                        }}
+                    >
                         <InputLabel id="demo-simple-select-label">
                             Cidade
                         </InputLabel>
@@ -263,6 +283,9 @@ const ClinicSimpleRegisterPage = () => {
 
                 <Box className="form-separation">
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="CEP"
@@ -272,6 +295,9 @@ const ClinicSimpleRegisterPage = () => {
                     />
 
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Rua"
@@ -283,6 +309,9 @@ const ClinicSimpleRegisterPage = () => {
 
                 <Box className="form-separation">
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Número"
@@ -292,6 +321,9 @@ const ClinicSimpleRegisterPage = () => {
                     />
 
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         id="outlined"
                         label="Complemento"
                         type="text"
@@ -302,6 +334,9 @@ const ClinicSimpleRegisterPage = () => {
 
                 <Box className="form-separation">
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Email"
@@ -311,28 +346,35 @@ const ClinicSimpleRegisterPage = () => {
                     />
 
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         required
                         id="outlined-required"
                         label="Telefone"
                         type="text"
-                        value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                 </Box>
 
                 <Box className="form-separation">
                     <TextField
+                        sx={{
+                            width: "40%",
+                        }}
                         id="outlined"
                         label="Website"
                         type="text"
                         value={website}
                         onChange={(e) => setWebsite(e.target.value)}
                     />
-                    <Box sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "50%",
-                    }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "40%",
+                        }}
+                    >
                         <Button variant="contained" component="label">
                             Upload Imagem
                             <input
