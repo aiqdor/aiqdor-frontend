@@ -7,10 +7,12 @@ export type Clinic = {
     description: string;
     state: string;
     city: string;
+    street: string;
     addressNumber: string;
     expertises: string[];
     complement: string;
     idUser: string;
+    zipCode: string;
     acceptsInsurance: boolean;
     image: string;
 }

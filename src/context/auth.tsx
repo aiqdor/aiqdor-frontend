@@ -65,7 +65,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         await auth.signOut();
         setUser(null);
         setIsAdmin(false);
-        navigate("/login");
     };
 
     const createAccount = async (

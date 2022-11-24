@@ -5,10 +5,13 @@ import TextField from "@mui/material/TextField";
 import {
     Button,
     FormControl,
+    FormControlLabel,
+    Icon,
     InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
+    Switch,
 } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 import firebase from "firebase";
@@ -38,6 +41,9 @@ const ClinicSimpleRegisterPage = () => {
     const [image, setImage] = useState("");
     const [acceptInsurance, setAcceptInsurance] = useState(false);
 
+    const [imageUploaded, setImageUploaded] = useState(false);
+    const [imageUploadError, setImageUploadError] = useState(false);
+
     const storage = firebase.storage().ref();
 
     const uploadImage = async (e: any) => {
@@ -45,9 +51,15 @@ const ClinicSimpleRegisterPage = () => {
 
         console.log(file);
 
-        const response = await storage.child(file.name).put(file);
+        try {
+            const response = await storage.child(file.name).put(file);
 
-        setImage(await response.ref.getDownloadURL());
+            setImage(await response.ref.getDownloadURL());
+
+            setImageUploaded(true);
+        } catch (err) {
+            setImageUploadError(true);
+        }
     };
 
     const handleSubmit = async (e: any) => {
@@ -65,6 +77,8 @@ const ClinicSimpleRegisterPage = () => {
             expertises: selectedExpertises,
             state: selectedState?.name,
             city: selectedCity?.name,
+            email,
+            zipCode: cep,
             image,
             acceptInsurance,
         });
@@ -129,6 +143,10 @@ const ClinicSimpleRegisterPage = () => {
         navigate("/home");
     };
 
+    const handleAcceptInsurance = (e: any) => {
+        setAcceptInsurance(e.target.checked);
+    }
+
     const handleExpertiseSelect = (event: SelectChangeEvent) => {
         const {
             target: { value },
@@ -153,9 +171,10 @@ const ClinicSimpleRegisterPage = () => {
                 component="form"
                 sx={{
                     m: "0 auto",
-                    width: "70%",
                     textAlign: "center",
+                    width: "100%",
                     gap: 2,
+                    maxWidth: "1050px",
                 }}
                 autoComplete="off"
                 display="flex"
@@ -212,7 +231,7 @@ const ClinicSimpleRegisterPage = () => {
                             {expertises.map((expertise) => (
                                 <MenuItem
                                     key={expertise.id}
-                                    value={expertise.id}
+                                    value={expertise.name}
                                 >
                                     {expertise.name}
                                 </MenuItem>
@@ -372,6 +391,7 @@ const ClinicSimpleRegisterPage = () => {
                         sx={{
                             display: "flex",
                             justifyContent: "center",
+                            alignItems: "center",
                             width: "40%",
                         }}
                     >
@@ -385,8 +405,14 @@ const ClinicSimpleRegisterPage = () => {
                                 onInput={(e) => uploadImage(e)}
                             />
                         </Button>
+                        {imageUploaded ? (
+                            <Icon color="success">check_circle</Icon>
+                        ) : imageUploadError ? (
+                            <Icon color="error">error</Icon>
+                        ) : null}
                     </Box>
                 </Box>
+                    <FormControlLabel onChange={handleAcceptInsurance} control={<Switch/>} label="Aceita Unimded"/>
 
                 <Box
                     sx={{

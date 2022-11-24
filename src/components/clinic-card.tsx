@@ -81,10 +81,10 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             {clinic.name}
                         </Typography>
                         <Typography color="textPrimary" variant="body1">
-                            {clinic?.expertises}
+                            {clinic?.expertises.join(", ")}
                         </Typography>
-                        <Typography noWrap color="textPrimary" variant="body1">
-                            {clinic?.city} , {clinic?.addressNumber}
+                        <Typography color="textPrimary" variant="body1">
+                            {clinic?.state}, {clinic?.city}, {clinic?.street}
                         </Typography>
                     </Box>
                 </CardContent>
