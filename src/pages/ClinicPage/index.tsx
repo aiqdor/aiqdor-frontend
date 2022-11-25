@@ -41,6 +41,7 @@ const ClinicPage = () => {
                     phone: snapshot?.data()?.phone,
                     email: snapshot?.data()?.email,
                     website: snapshot?.data()?.website,
+                    idUser: snapshot?.data()?.idUser,
                     description: snapshot?.data()?.description,
                     image: snapshot?.data()?.image,
                     location: snapshot?.data()?.location,

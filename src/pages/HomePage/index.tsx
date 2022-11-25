@@ -22,6 +22,7 @@ const HomePage = () => {
                         phone: doc.data().phone,
                         email: doc.data().email,
                         website: doc.data().website,
+                        idUser: doc.data().idUser,
                         description: doc.data().description,
                         addressNumber: doc.data().addressNumber,
                         state: doc.data().state,

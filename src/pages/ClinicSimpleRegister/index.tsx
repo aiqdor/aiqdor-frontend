@@ -224,6 +224,7 @@ const ClinicSimpleRegisterPage = () => {
                         </InputLabel>
                         <Select
                             label="Especialização"
+                            // @ts-ignore
                             value={selectedExpertises}
                             multiple
                             onChange={handleExpertiseSelect}
