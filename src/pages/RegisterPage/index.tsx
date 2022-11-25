@@ -44,9 +44,34 @@ const RegisterPage = () => {
         event.preventDefault();
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        createAccount(firstName, lastName, email, password, confirmPassword, phoneNumber, isOwner);
+        try {
+            await createAccount(
+                firstName,
+                lastName,
+                email,
+                password,
+                confirmPassword,
+                phoneNumber,
+                isOwner
+            );
+
+            if (isOwner) {
+                navigate("/registerClinic");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            console.log(err);
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setPhoneNumber("");
+            setFirstName("");
+            setlastName("");
+            setIsOwner(false);
+        }
     };
 
     return (
@@ -83,7 +108,6 @@ const RegisterPage = () => {
                     onChange={(e) => setlastName(e.target.value)}
                 />
             </Box>
-            
             <Box>
                 <TextField
                     required
@@ -104,7 +128,6 @@ const RegisterPage = () => {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                 />
             </Box>
-
             <Box>
                 <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">
@@ -136,8 +159,7 @@ const RegisterPage = () => {
                     />
                 </FormControl>
                 <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password"
-                    >
+                    <InputLabel htmlFor="outlined-adornment-password">
                         Confirme a Senha
                     </InputLabel>
                     <OutlinedInput
@@ -145,7 +167,9 @@ const RegisterPage = () => {
                         type={showPassword ? "text" : "password"}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        error={password.length > 0 && confirmPassword !== password}
+                        error={
+                            password.length > 0 && confirmPassword !== password
+                        }
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
@@ -164,24 +188,21 @@ const RegisterPage = () => {
                         }
                         label="Confirme a Senha"
                     />
-                </FormControl>     
+                </FormControl>
             </Box>
-
-            Você é dono de clínica?    
+            Você é dono de clínica?
             <Stack direction="row" spacing={1} alignItems="center">
                 <Typography>Não</Typography>
                 <Switch
                     checked={isOwner}
                     onChange={() => setIsOwner(!isOwner)}
-                    inputProps={{ 'aria-label': 'controlled' }}
+                    inputProps={{ "aria-label": "controlled" }}
                 />
                 <Typography>Sim</Typography>
             </Stack>
-
             <Button variant="contained" type="submit">
                 Cadastrar
             </Button>
-
             <Button variant="text" onClick={() => navigate(-1)}>
                 Voltar
             </Button>

@@ -62,7 +62,7 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             <Avatar
                                 sx={{ width: 80, height: 80 }}
                                 alt="Foto"
-                                src={clinic.mediaUrl}
+                                src={clinic.image}
                                 variant="rounded"
                             />
                         </Badge>
@@ -81,10 +81,10 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             {clinic.name}
                         </Typography>
                         <Typography color="textPrimary" variant="body1">
-                            {clinic.category}
+                            {clinic?.expertises.join(", ")}
                         </Typography>
-                        <Typography noWrap color="textPrimary" variant="body1">
-                            {clinic?.address}
+                        <Typography color="textPrimary" variant="body1">
+                            {clinic?.state}, {clinic?.city}, {clinic?.street}
                         </Typography>
                     </Box>
                 </CardContent>

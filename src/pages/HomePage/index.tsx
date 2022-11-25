@@ -17,14 +17,20 @@ const HomePage = () => {
                 snapshot.forEach((doc) => {
                     clinics.push({
                         id: doc.id,
-                        name: doc.data().name,
-                        address: doc.data().address,
+                        name: doc.data()?.name,
+                        city: doc.data()?.city,
                         phone: doc.data().phone,
                         email: doc.data().email,
                         website: doc.data().website,
+                        idUser: doc.data().idUser,
                         description: doc.data().description,
-                        mediaUrl: doc.data().mediaUrl,
-                        category: doc.data().category,
+                        addressNumber: doc.data().addressNumber,
+                        state: doc.data().state,
+                        street: doc.data().street,
+                        zipCode: doc.data().zipCode,
+                        complement: doc.data().complement,
+                        image: doc.data().image,
+                        expertises: doc.data().expertises,
                         acceptsInsurance: false
                     });
                     setClinics(clinics);

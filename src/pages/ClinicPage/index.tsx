@@ -32,19 +32,27 @@ const ClinicPage = () => {
                 const clinic = {
                     id: snapshot.id,
                     name: snapshot?.data()?.name,
-                    address: snapshot?.data()?.address,
+                    state: snapshot?.data()?.state,
+                    city: snapshot?.data()?.city,
+                    street: snapshot?.data()?.street,
+                    zipCode: snapshot?.data()?.zipCode,
+                    addressNumber: snapshot?.data()?.addressNumber,
+                    complement: snapshot?.data()?.complement,
                     phone: snapshot?.data()?.phone,
                     email: snapshot?.data()?.email,
                     website: snapshot?.data()?.website,
+                    idUser: snapshot?.data()?.idUser,
                     description: snapshot?.data()?.description,
-                    mediaUrl: snapshot?.data()?.mediaUrl,
-                    category: snapshot?.data()?.category,
+                    image: snapshot?.data()?.image,
                     location: snapshot?.data()?.location,
+                    expertises: snapshot?.data()?.expertises,
                     acceptsInsurance: snapshot?.data()?.acceptsInsurance,
                 };
                 setClinic(clinic);
             });
     };
+
+    const address = `${clinic?.state}, ${clinic?.city}, ${clinic?.street}, ${clinic?.addressNumber}`;
 
     const getProcedures = async () => {
         firebase
@@ -101,7 +109,7 @@ const ClinicPage = () => {
                             >
                                 <Avatar
                                     alt="Foto clínica"
-                                    src={clinic.mediaUrl}
+                                    src={clinic.image}
                                     variant="square"
                                     sx={{ width: 130, height: 130 }}
                                 />
@@ -115,7 +123,10 @@ const ClinicPage = () => {
                         </Box>
                         <Divider sx={{ marginTop: 2 }}>Detalhes</Divider>
                         <Box>
-                            {clinic.address ? (
+                            {!!clinic.state &&
+                            !!clinic.city &&
+                            !!clinic.state &&
+                            !!clinic.addressNumber ? (
                                 <Box
                                     sx={{
                                         display: "flex",
@@ -124,11 +135,12 @@ const ClinicPage = () => {
                                     }}
                                 >
                                     <Typography>
-                                        Endereço: {clinic.address}
+                                        Endereço: {clinic.state}, {clinic.city},{" "}
+                                        {clinic.state}, {clinic.addressNumber}
                                     </Typography>
                                     <Link
                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURI(
-                                            clinic.address
+                                            address
                                         )}`}
                                         target={"_blank"}
                                     >
@@ -155,6 +167,17 @@ const ClinicPage = () => {
                                     </Icon>
                                 )}
                             </Typography>
+                            {clinic.expertises.length > 0 ? (
+                                <Typography
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    Especialidades:{" "}
+                                    {clinic.expertises.join(", ")}
+                                </Typography>
+                            ) : null}
                         </Box>
                         {clinic.phone || clinic.website || clinic.email ? (
                             <Box>
@@ -197,63 +220,71 @@ const ClinicPage = () => {
                                 <Box>
                                     {clinic.website ? (
                                         <Typography>
-                                            Site: {clinic.website}
+                                            <Link href={clinic.website}>
+                                                Site
+                                            </Link>
                                         </Typography>
                                     ) : null}
                                 </Box>
                             </Box>
                         ) : null}
-                        <Box>
-                            <Divider sx={{ marginTop: 2 }}>
-                                Procedimentos
-                            </Divider>
-                            {procedures.map((procedure) => (
-                                <Box
-                                    sx={{
-                                        border: 1,
-                                        borderColor: "lightgrey",
-                                        borderRadius: 2,
-                                        p: 2,
-                                        m: 1,
-                                        display: "flex",
-                                    }}
-                                >
+                        {procedures.length > 0 ? (
+                            <Box>
+                                <Divider sx={{ marginTop: 2 }}>
+                                    Procedimentos
+                                </Divider>
+                                {procedures.map((procedure) => (
                                     <Box
-                                        key={procedure.id}
                                         sx={{
+                                            border: 1,
+                                            borderColor: "lightgrey",
+                                            borderRadius: 2,
+                                            p: 2,
+                                            m: 1,
                                             display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            width: "100%",
                                         }}
                                     >
-                                        <Box>
+                                        <Box
+                                            key={procedure.id}
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                                width: "100%",
+                                            }}
+                                        >
                                             <Box>
-                                                <Typography>
-                                                    {procedure.name}
-                                                </Typography>
+                                                <Box>
+                                                    <Typography>
+                                                        {procedure.name}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography>
+                                                        Preço: {procedure.price}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography>
+                                                        Descrição:{" "}
+                                                        {procedure.description}
+                                                    </Typography>
+                                                </Box>
                                             </Box>
-                                            <Box>
-                                                <Typography>
-                                                    Preço: {procedure.price}
-                                                </Typography>
-                                            </Box>
-                                            <Box>
-                                                <Typography>
-                                                    Descrição:{" "}
-                                                    {procedure.description}
-                                                </Typography>
-                                            </Box>
+                                            <Link>
+                                                <Button>Agendar</Button>
+                                            </Link>
                                         </Box>
-                                        <Link>
-                                            <Button>Agendar</Button>
-                                        </Link>
                                     </Box>
-                                </Box>
-                            ))}
-                        </Box>
+                                ))}
+                            </Box>
+                        ) : null}
 
-                        <Button fullWidth variant="contained">
+                        <Button
+                            sx={{ marginTop: 2 }}
+                            fullWidth
+                            variant="contained"
+                        >
                             Marcar horário
                         </Button>
                     </Box>

@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));
             localStorage.setItem("authUser", JSON.stringify(auth.currentUser));
             setUser(auth.currentUser);
-            navigate(isAdmin ? "/admin" : "/");
+
+            navigate("/");        
         } catch (error) {
             toast.error("Email ou senha incorreta!", {
                 position: "top-right",
@@ -60,12 +61,14 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
     };
 
+
     const logout = async (forceLogin: boolean = true) => {
         localStorage.removeItem("authUser");
         localStorage.removeItem("isAdmin");
         await auth.signOut();
         setUser(null);
         setIsAdmin(false);
+
         if (forceLogin) {
             navigate("/login");
         }
@@ -113,6 +116,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 displayName: firstName + " " + lastName,
             });
 
+            await login(email, password);
+
             toast.success("Conta criada com sucesso!", {
                 position: "top-right",
                 autoClose: 2000,
@@ -122,8 +127,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 draggable: true,
                 progress: undefined,
             });
-
-            navigate("/login");
         } catch (error) {
             console.error(error);
         }

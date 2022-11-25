@@ -6,8 +6,6 @@ import {
     Button,
     Modal,
     Paper,
-    Stack,
-    Switch,
     Table,
     TableBody,
     TableCell,
@@ -18,39 +16,35 @@ import {
     Typography,
 } from "@mui/material";
 import { MainHeader } from "../../components/main-header";
-import { User } from "../../types/User";
+import { Expertise } from "../../types/Expertise";
 
-const UserPage = () => {
+const ExpertisePage = () => {
     const navigate = useNavigate();
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [duration, setDuration] = useState(0);
+    const [price, setPrice] = useState("");
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [admin, setAdmin] = useState(false);
-    const [isOwner, setIsOwner] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
 
     const handleOpen = async (id?: string) => {
         if (id) {
-            const user = users.find((p) => p.id === id);
-            if (user) {
+            const expertise = expertises.find((p) => p.id === id);
+            if (expertise) {
+                setName(expertise.name);
+                setDescription(expertise.description);
                 setIdEdit(id);
-                setFirstName(user.firstName);
-                setLastName(user.lastName);
-                setEmail(user.email);
-                setAdmin(user.admin);
-                setIsOwner(user.isOwner);
-                setPhoneNumber(user.phoneNumber);
             }
-        }
+        } 
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+        setName("");
+        setDescription("");
         setIdEdit("");
-    };
+    }
 
     const styleModal = {
         position: "absolute",
@@ -66,60 +60,47 @@ const UserPage = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
+        
         if (idEdit !== "") {
-            await firebase.firestore().collection("users").doc(idEdit).update({
-                firstName,
-                lastName,
-                email,
-                admin,
-                isOwner,
-                phoneNumber,
+            await firebase.firestore().collection("expertises").doc(idEdit).update({
+                name,
+                description,
             });
         } else {
-            await firebase.firestore().collection("users").add({
-                firstName,
-                lastName,
-                email,
-                admin,
-                isOwner,
-                phoneNumber,
+            await firebase.firestore().collection("expertises").add({
+                name,
+                description,
             });
         }
 
         handleClose();
     };
 
-    const deleteUser = (id: string) => {
-        firebase.firestore().collection("users").doc(id).delete();
+    const deleteExpertise = (id: string) => {
+        firebase.firestore().collection("expertises").doc(id).delete();
     };
 
-    const [users, setUsers] = useState<User[]>([]);
+    const [expertises, setExpertises] = useState<Expertise[]>([]);
 
-    const getUsers = async () => {
+    const getExpertises = async () => {
         firebase
             .firestore()
-            .collection("users")
+            .collection("expertises")
             .onSnapshot((snapshot) => {
-                const users: User[] = [];
+                const expertises: Expertise[] = [];
                 snapshot.forEach((doc) => {
-                    users.push({
+                    expertises.push({
                         id: doc.id,
-                        firstName: doc.data().firstName,
-                        lastName: doc.data().lastName,
-                        email: doc.data().email,
-                        admin: doc.data().admin,
-                        isOwner: doc.data().isOwner,
-                        phoneNumber: doc.data().phoneNumber,
-                        createdAt: doc.data().createdAt,
+                        name: doc.data().name,
+                        description: doc.data().description,
                     });
-                    setUsers(users);
+                    setExpertises(expertises);
                 });
             });
     };
 
     useEffect(() => {
-        getUsers();
+        getExpertises();
     }, []);
 
     return (
@@ -131,7 +112,7 @@ const UserPage = () => {
             </MainHeader>
 
             <Button variant="contained" onClick={() => handleOpen()}>
-                Adicionar Usuário
+                Adicionar Especialização
             </Button>
             <Modal
                 open={open}
@@ -152,59 +133,23 @@ const UserPage = () => {
                         alignItems="center"
                         onSubmit={handleSubmit}
                     >
-                        <Typography variant="h4">Usuário</Typography>
+                        <Typography variant="h4">Especialização</Typography>
                         <TextField
                             required
                             id="outlined-required"
-                            label="Primeiro nome"
+                            label="Nome"
                             type="text"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                         />
                         <TextField
                             required
                             id="outlined-required"
-                            label="Último nome"
+                            label="Descrição"
                             type="text"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Telefone"
-                            type="text"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                        Dono de clínica?
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography>Não</Typography>
-                            <Switch
-                                checked={isOwner}
-                                onChange={() => setIsOwner(!isOwner)}
-                                inputProps={{ "aria-label": "controlled" }}
-                            />
-                            <Typography>Sim</Typography>
-                        </Stack>
-                        Administrador?
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography>Não</Typography>
-                            <Switch
-                                checked={admin}
-                                onChange={() => setAdmin(!admin)}
-                                inputProps={{ "aria-label": "controlled" }}
-                            />
-                            <Typography>Sim</Typography>
-                        </Stack>
                         <Button variant="contained" type="submit">
                             Salvar
                         </Button>
@@ -212,7 +157,7 @@ const UserPage = () => {
                 </Box>
             </Modal>
 
-            <h1>Usuários</h1>
+            <h1>Especializações</h1>
             <Box
                 sx={{ pt: 3 }}
                 flexDirection="column"
@@ -229,47 +174,33 @@ const UserPage = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Nome</TableCell>
-                                    <TableCell align="right">Email</TableCell>
                                     <TableCell align="right">
-                                        Telefone
-                                    </TableCell>
-                                    <TableCell align="right">Admin</TableCell>
-                                    <TableCell align="right">
-                                        Dono de Clínica
+                                        Descrição
                                     </TableCell>
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {users.map((user) => (
+                                {expertises.map((expertise) => (
                                     <TableRow
-                                        key={user.id}
+                                        key={expertise.id}
                                         sx={{
                                             "&:last-child td, &:last-child th":
                                                 { border: 0 },
                                         }}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {user.firstName} {user.lastName}
+                                            {expertise.name}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {user.email}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {user.phoneNumber}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {user.admin ? "Sim" : "Não"}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {user.isOwner ? "Sim" : "Não"}
+                                            {expertise.description}
                                         </TableCell>
                                         <TableCell align="right">
                                             <Button
                                                 size="small"
                                                 color="primary"
                                                 onClick={() =>
-                                                    handleOpen(user.id)
+                                                    handleOpen(expertise.id)
                                                 }
                                             >
                                                 Editar
@@ -278,7 +209,9 @@ const UserPage = () => {
                                                 size="small"
                                                 color="primary"
                                                 onClick={() =>
-                                                    deleteUser(user.id)
+                                                    deleteExpertise(
+                                                        expertise.id
+                                                    )
                                                 }
                                             >
                                                 Deletar
@@ -295,4 +228,4 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default ExpertisePage;
