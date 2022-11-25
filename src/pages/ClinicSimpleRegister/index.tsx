@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -13,14 +13,13 @@ import {
     SelectChangeEvent,
     Switch,
 } from "@mui/material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import firebase from "firebase";
 import { Expertise } from "../../types/Expertise";
 import { State } from "../../types/State";
 import { City } from "../../types/City";
-import ReactInputMask from "react-input-mask";
 
-const ClinicSimpleRegisterPage = () => {
+const ClinicSimpleRegister = () => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -436,4 +435,4 @@ const ClinicSimpleRegisterPage = () => {
     );
 };
 
-export default ClinicSimpleRegisterPage;
+export default ClinicSimpleRegister;

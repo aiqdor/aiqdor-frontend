@@ -9,7 +9,7 @@ import {
 
 import AuthContext, { AuthProvider } from "./context/auth";
 import AdminPage from "./pages/AdminPage";
-import ClinicSimpleRegisterPage from "./pages/ClinicSimpleRegister";
+import ClinicSimpleRegister from "./pages/ClinicSimpleRegister";
 import ExpertisePage from "./pages/ExpertisePage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -112,7 +112,7 @@ const AppRoutes = () => {
                         path="registerClinic"
                         element={
                             <Private>
-                                <ClinicSimpleRegisterPage />
+                                <ClinicSimpleRegister />
                             </Private>
                         }
                     />
