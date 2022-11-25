@@ -46,6 +46,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));
             localStorage.setItem("authUser", JSON.stringify(auth.currentUser));
             setUser(auth.currentUser);
+
+            navigate("/");        
         } catch (error) {
             toast.error("Email ou senha incorreta!", {
                 position: "top-right",
@@ -59,12 +61,17 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
     };
 
-    const logout = async () => {
+
+    const logout = async (forceLogin: boolean = true) => {
         localStorage.removeItem("authUser");
         localStorage.removeItem("isAdmin");
         await auth.signOut();
         setUser(null);
         setIsAdmin(false);
+
+        if (forceLogin) {
+            navigate("/login");
+        }
     };
 
     const createAccount = async (
