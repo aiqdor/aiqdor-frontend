@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState<firebase.User | null>(null);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isOwner, setIsOwner] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -27,6 +28,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         const isAdmin = localStorage.getItem("isAdmin");
         if (isAdmin) {
             setIsAdmin(JSON.parse(isAdmin));
+        }
+
+        const isOwner = localStorage.getItem("isOwner");
+        if (isOwner) {
+            setIsOwner(JSON.parse(isOwner));
         }
 
         setLoading(false);
@@ -44,6 +50,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             setIsAdmin(userInfo.admin);
 
             localStorage.setItem("isAdmin", JSON.stringify(userInfo.admin));
+            localStorage.setItem("isOwner", JSON.stringify(userInfo.isOwner));
             localStorage.setItem("authUser", JSON.stringify(auth.currentUser));
             setUser(auth.currentUser);
 
@@ -65,6 +72,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const logout = async (forceLogin: boolean = true) => {
         localStorage.removeItem("authUser");
         localStorage.removeItem("isAdmin");
+        localStorage.removeItem("isOwner");
         await auth.signOut();
         setUser(null);
         setIsAdmin(false);
@@ -137,6 +145,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             value={{
                 isAuthenticated: !!user,
                 isAdmin,
+                isOwner,
                 user,
                 loading,
                 login,

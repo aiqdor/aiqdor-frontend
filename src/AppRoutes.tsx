@@ -15,8 +15,10 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ProcedurePage from "./pages/ProcedurePage";
 import RegisterPage from "./pages/RegisterPage";
-import UserPage from "./pages/UserPage";
+import UsersPage from "./pages/UsersPage";
 import ClinicPage from "./pages/ClinicPage";
+import UserPage from "./pages/UserPage";
+import UserClinicsPage from "./pages/UserClinicsPage";
 
 const AppRoutes = () => {
     const Private = ({ children }: { children: JSX.Element }) => {
@@ -72,16 +74,16 @@ const AppRoutes = () => {
                         path="users"
                         element={
                             <Admin>
-                                <UserPage />
+                                <UsersPage />
                             </Admin>
                         }
                     />
                     <Route
-                        path="procedures"
+                        path="user"
                         element={
-                            <Admin>
-                                <ProcedurePage />
-                            </Admin>
+                            <Private>
+                                <UserPage />
+                            </Private>
                         }
                     />
                     <Route
@@ -93,15 +95,15 @@ const AppRoutes = () => {
                         }
                     />
                     <Route
-                        path="users"
+                        path="clinics"
                         element={
-                            <Admin>
-                                <UserPage />
-                            </Admin>
+                            <Private>
+                                <UserClinicsPage />
+                            </Private>
                         }
                     />
-                    <Route path="clinicSettings" element={<AdminPage />} />
-                    <Route path="profileSettings" element={<AdminPage />} />
+                    {/* <Route path="clinicSettings" element={<AdminPage />} />
+                    <Route path="profileSettings" element={<AdminPage />} /> */}
                     <Route
                         path="consultationSettings"
                         element={<AdminPage />}

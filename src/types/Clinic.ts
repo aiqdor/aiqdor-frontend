@@ -13,6 +13,6 @@ export type Clinic = {
     complement: string;
     idUser: string;
     zipCode: string;
-    acceptsInsurance: boolean;
+    acceptInsurance: boolean;
     image: string;
 }

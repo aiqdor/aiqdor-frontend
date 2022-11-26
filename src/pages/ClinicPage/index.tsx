@@ -29,7 +29,7 @@ const ClinicPage = () => {
             .firestore()
             .doc(`clinics/${id}`)
             .onSnapshot((snapshot) => {
-                const clinic = {
+                const clinic: Clinic = {
                     id: snapshot.id,
                     name: snapshot?.data()?.name,
                     state: snapshot?.data()?.state,
@@ -44,9 +44,8 @@ const ClinicPage = () => {
                     idUser: snapshot?.data()?.idUser,
                     description: snapshot?.data()?.description,
                     image: snapshot?.data()?.image,
-                    location: snapshot?.data()?.location,
                     expertises: snapshot?.data()?.expertises,
-                    acceptsInsurance: snapshot?.data()?.acceptsInsurance,
+                    acceptInsurance: snapshot?.data()?.acceptInsurance,
                 };
                 setClinic(clinic);
             });
@@ -157,7 +156,7 @@ const ClinicPage = () => {
                                 }}
                             >
                                 Aceita Unimed:{" "}
-                                {clinic.acceptsInsurance ? (
+                                {clinic.acceptInsurance ? (
                                     <Icon fontSize="small" color="success">
                                         check_circle
                                     </Icon>
