@@ -2,38 +2,48 @@ import { useContext } from "react";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth";
+import { MainHeader } from "../../components/main-header";
 
 const AdminPage = () => {
-    const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleClick = () => {
-        logout();
-        navigate("/");
-    }
-
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-        >
-            Admin Page
+        <div>
+            <MainHeader />
 
-            <Button variant="contained" color="primary" onClick={ handleClick }>
-                { "Logout" }
-            </Button>
+            <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100vh"
+            >
+                Admin Page
 
-            <Button variant="contained" color="primary" onClick={ () => navigate("/procedures") }>
-                { "Procedures" }
-            </Button>
-            <Button variant="contained" color="primary" onClick={ () => navigate("/users") }>
-                { "Usuários" }
-            </Button>
-        </Box>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/procedures")}
+                >
+                    {"Procedures"}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/users")}
+                >
+                    {"Usuários"}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/expertises")}
+                >
+                    {"Especializações"}
+                </Button>
+            </Box>
+        </div>
     );
-    }
+};
 
-    export default AdminPage;
+export default AdminPage;

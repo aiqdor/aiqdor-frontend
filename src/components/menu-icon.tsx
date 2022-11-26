@@ -12,6 +12,8 @@ import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth";
+import { ListItemButton } from "@mui/material";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 const MenuIcon = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -25,7 +27,7 @@ const MenuIcon = () => {
         setAnchorEl(null);
     };
 
-    const { isAuthenticated, logout } = useContext(AuthContext);
+    const { isAuthenticated, logout, isAdmin } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleAuthButton = () => {
@@ -96,7 +98,12 @@ const MenuIcon = () => {
                 {isAuthenticated ? (
                     <Box>
                         <MenuItem>
-                            <Avatar /> Perfil
+                            <Button
+                                variant="text"
+                                onClick={() => navigate(isAdmin ? "/admin" : "/user")}
+                            >
+                                <Avatar /> Perfil
+                            </Button>
                         </MenuItem>
                         <Divider />
                     </Box>

@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 export type AuthContextType = {
     isAuthenticated: boolean;
     isAdmin: boolean;
+    isOwner: boolean;
     user: firebase.User | null;
     loading: boolean;
     login: (email: string, password: string) => void;
