@@ -31,7 +31,7 @@ const HomePage = () => {
                         complement: doc.data().complement,
                         image: doc.data().image,
                         expertises: doc.data().expertises,
-                        acceptsInsurance: false
+                        acceptInsurance: false
                     });
                     setClinics(clinics);
                 });
