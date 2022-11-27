@@ -66,23 +66,42 @@ const ClinicSimpleRegister = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        await firebase.firestore().collection("clinics").add({
-            idUser: firebase.auth().currentUser?.uid,
-            name,
-            website,
-            description,
-            street: addressStreet,
-            addressNumber,
-            complement: addressComplement,
-            phone: phoneNumber,
-            expertises: selectedExpertises,
-            state: selectedState?.name,
-            city: selectedCity?.name,
-            email,
-            zipCode: cep,
-            image,
-            acceptInsurance,
-        });
+        if (id) {
+            await firebase.firestore().collection("clinics").doc(id).update({
+                name,
+                website,
+                description,
+                street: addressStreet,
+                addressNumber,
+                complement: addressComplement,
+                phone: phoneNumber,
+                expertises: selectedExpertises,
+                state: selectedState?.name,
+                city: selectedCity?.name,
+                email,
+                zipCode: cep,
+                image,
+                acceptInsurance,
+            });
+        } else {
+            await firebase.firestore().collection("clinics").add({
+                idUser: firebase.auth().currentUser?.uid,
+                name,
+                website,
+                description,
+                street: addressStreet,
+                addressNumber,
+                complement: addressComplement,
+                phone: phoneNumber,
+                expertises: selectedExpertises,
+                state: selectedState?.name,
+                city: selectedCity?.name,
+                email,
+                zipCode: cep,
+                image,
+                acceptInsurance,
+            });
+        }
 
         navigate("/");
     };
@@ -166,7 +185,9 @@ const ClinicSimpleRegister = () => {
                             setAcceptInsurance(data.acceptInsurance);
                         }
                     }
-                }); 
+                });
+
+            
         }
     }, []);
 
@@ -404,6 +425,7 @@ const ClinicSimpleRegister = () => {
                         id="outlined-required"
                         label="Telefone"
                         type="text"
+                        value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                 </Box>
