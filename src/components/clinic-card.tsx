@@ -17,12 +17,6 @@ import { CardActionArea } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
-    const navigate = useNavigate();
-
-    const openDetails = (id: any) => {
-        navigate(`/clinic/${id}`);
-    };
-
     const clinicDetailsLink = `/clinic/${clinic.id}`;
 
     return (
@@ -107,7 +101,7 @@ const ClinicCard = ({ clinic, ...rest }: { clinic: Clinic }) => {
                             Aberto
                         </Typography>
                     </Box>
-                    <Button onClick={() => openDetails(clinic.id)}>
+                    <Button>
                         Abrir
                     </Button>
                 </Box>
