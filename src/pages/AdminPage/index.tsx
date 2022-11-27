@@ -19,7 +19,6 @@ const AdminPage = () => {
                 minHeight="100vh"
             >
                 Admin Page
-
                 <Button
                     variant="contained"
                     color="primary"
@@ -40,6 +39,13 @@ const AdminPage = () => {
                     onClick={() => navigate("/expertises")}
                 >
                     {"Especializações"}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/clinics")}
+                >
+                    {"Clinicas"}
                 </Button>
             </Box>
         </div>

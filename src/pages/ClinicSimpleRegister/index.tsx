@@ -18,9 +18,11 @@ import firebase from "firebase";
 import { Expertise } from "../../types/Expertise";
 import { State } from "../../types/State";
 import { City } from "../../types/City";
+import { useParams } from "react-router";
 
 const ClinicSimpleRegister = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -64,23 +66,42 @@ const ClinicSimpleRegister = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        await firebase.firestore().collection("clinics").add({
-            idUser: firebase.auth().currentUser?.uid,
-            name,
-            website,
-            description,
-            street: addressStreet,
-            addressNumber,
-            complement: addressComplement,
-            phone: phoneNumber,
-            expertises: selectedExpertises,
-            state: selectedState?.name,
-            city: selectedCity?.name,
-            email,
-            zipCode: cep,
-            image,
-            acceptInsurance,
-        });
+        if (id) {
+            await firebase.firestore().collection("clinics").doc(id).update({
+                name,
+                website,
+                description,
+                street: addressStreet,
+                addressNumber,
+                complement: addressComplement,
+                phone: phoneNumber,
+                expertises: selectedExpertises,
+                state: selectedState?.name,
+                city: selectedCity?.name,
+                email,
+                zipCode: cep,
+                image,
+                acceptInsurance,
+            });
+        } else {
+            await firebase.firestore().collection("clinics").add({
+                idUser: firebase.auth().currentUser?.uid,
+                name,
+                website,
+                description,
+                street: addressStreet,
+                addressNumber,
+                complement: addressComplement,
+                phone: phoneNumber,
+                expertises: selectedExpertises,
+                state: selectedState?.name,
+                city: selectedCity?.name,
+                email,
+                zipCode: cep,
+                image,
+                acceptInsurance,
+            });
+        }
 
         navigate("/");
     };
@@ -136,6 +157,38 @@ const ClinicSimpleRegister = () => {
     useEffect(() => {
         loadExpertises();
         loadStates();
+
+        if (id) {
+            firebase
+                .firestore()
+                .collection("clinics")
+                .doc(id)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+
+                        if (data) {
+                            setName(data.name);
+                            setWebsite(data.website);
+                            setDescription(data.description);
+                            setAddressStreet(data.street);
+                            setAddressNumber(data.addressNumber);
+                            setAddressComplement(data.complement);
+                            setPhoneNumber(data.phone);
+                            setSelectedExpertises(data.expertises);
+                            setSelectedState(data.state);
+                            setSelectedCity(data.city);
+                            setEmail(data.email);
+                            setCep(data.zipCode);
+                            setImage(data.image);
+                            setAcceptInsurance(data.acceptInsurance);
+                        }
+                    }
+                });
+
+            
+        }
     }, []);
 
     const handleBack = () => {
@@ -144,7 +197,7 @@ const ClinicSimpleRegister = () => {
 
     const handleAcceptInsurance = (e: any) => {
         setAcceptInsurance(e.target.checked);
-    }
+    };
 
     const handleExpertiseSelect = (event: SelectChangeEvent) => {
         const {
@@ -372,6 +425,7 @@ const ClinicSimpleRegister = () => {
                         id="outlined-required"
                         label="Telefone"
                         type="text"
+                        value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                 </Box>
@@ -412,7 +466,11 @@ const ClinicSimpleRegister = () => {
                         ) : null}
                     </Box>
                 </Box>
-                    <FormControlLabel onChange={handleAcceptInsurance} control={<Switch/>} label="Aceita Unimded"/>
+                <FormControlLabel
+                    onChange={handleAcceptInsurance}
+                    control={<Switch />}
+                    label="Aceita Unimed"
+                />
 
                 <Box
                     sx={{

@@ -102,8 +102,6 @@ const AppRoutes = () => {
                             </Private>
                         }
                     />
-                    {/* <Route path="clinicSettings" element={<AdminPage />} />
-                    <Route path="profileSettings" element={<AdminPage />} /> */}
                     <Route
                         path="consultationSettings"
                         element={<AdminPage />}
@@ -112,6 +110,14 @@ const AppRoutes = () => {
                     <Route path="register" element={<RegisterPage />} />
                     <Route
                         path="registerClinic"
+                        element={
+                            <Private>
+                                <ClinicSimpleRegister />
+                            </Private>
+                        }
+                    />
+                    <Route
+                        path="registerClinic/:id"
                         element={
                             <Private>
                                 <ClinicSimpleRegister />

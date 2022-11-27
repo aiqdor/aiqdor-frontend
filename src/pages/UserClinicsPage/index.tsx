@@ -26,32 +26,16 @@ const UserClinicsPage = () => {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [acceptInsurance, setAcceptInsurance] = useState(false);
-    const [addressNumber, setAddressNumber] = useState("");
-    const [city, setCity] = useState("");
-    const [complement, setComplement] = useState("");
-    const [image, setImage] = useState("");
-    const [phone, setPhone] = useState("");
-    const [state, setState] = useState("");
-    const [street, setStreet] = useState("");
-    const [website, setWebsite] = useState("");
-    const [zipCode, setZipCode] = useState("");
-    const [email, setEmail] = useState("");
-    const [expertise, setExpertise] = useState("");
 
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");
 
     const handleOpen = async (id?: string) => {
         if (id) {
-            const clinic = clinics.find((p) => p.id === id);
-            if (clinic) {
-                setName(clinic.name);
-                setDescription(clinic.description);
-                setIdEdit(id);
-            }
+            navigate(`/registerClinic/${id}`);
+        } else {
+            navigate(`/registerClinic`);
         }
-        setOpen(true);
     };
 
     const handleClose = () => {
@@ -102,56 +86,62 @@ const UserClinicsPage = () => {
     const getClinics = async () => {
         const user = firebase.auth().currentUser;
         if (isAdmin) {
-            const clinics = await firebase
+            firebase
                 .firestore()
                 .collection("clinics")
-                .get();
-            setClinics(
-                clinics.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().name,
-                    description: doc.data().description,
-                    acceptInsurance: doc.data().acceptInsurance,
-                    idUser: doc.data().idUser,
-                    addressNumber: doc.data().addressNumber,
-                    city: doc.data().city,
-                    complement: doc.data().complement,
-                    image: doc.data().image,
-                    phone: doc.data().phone,
-                    state: doc.data().state,
-                    street: doc.data().street,
-                    website: doc.data().website,
-                    zipCode: doc.data().zipCode,
-                    email: doc.data().email,
-                    expertises: doc.data().expertises,
-                }))
-            );
+                .onSnapshot((snapshot) => {
+                    const clinics: Clinic[] = [];
+                    snapshot.forEach((doc) => {
+                        clinics.push({
+                            id: doc.id,
+                            name: doc.data().name,
+                            description: doc.data().description,
+                            acceptInsurance: doc.data().acceptInsurance,
+                            idUser: doc.data().idUser,
+                            addressNumber: doc.data().addressNumber,
+                            city: doc.data().city,
+                            complement: doc.data().complement,
+                            image: doc.data().image,
+                            phone: doc.data().phone,
+                            state: doc.data().state,
+                            street: doc.data().street,
+                            website: doc.data().website,
+                            zipCode: doc.data().zipCode,
+                            email: doc.data().email,
+                            expertises: doc.data().expertises,
+                        });
+                    });
+                    setClinics(clinics);
+                });
         } else if (user) {
-            const clinics = await firebase
+            firebase
                 .firestore()
                 .collection("clinics")
-                .where("userId", "==", user.uid)
-                .get();
-            setClinics(
-                clinics.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().name,
-                    description: doc.data().description,
-                    acceptInsurance: doc.data().acceptInsurance,
-                    idUser: doc.data().idUser,
-                    addressNumber: doc.data().addressNumber,
-                    city: doc.data().city,
-                    complement: doc.data().complement,
-                    image: doc.data().image,
-                    phone: doc.data().phone,
-                    state: doc.data().state,
-                    street: doc.data().street,
-                    website: doc.data().website,
-                    zipCode: doc.data().zipCode,
-                    email: doc.data().email,
-                    expertises: doc.data().expertises,
-                }))
-            );
+                .where("idUser", "==", user.uid)
+                .onSnapshot((snapshot) => {
+                    const clinics: Clinic[] = [];
+                    snapshot.forEach((doc) => {
+                        clinics.push({
+                            id: doc.id,
+                            name: doc.data().name,
+                            description: doc.data().description,
+                            acceptInsurance: doc.data().acceptInsurance,
+                            idUser: doc.data().idUser,
+                            addressNumber: doc.data().addressNumber,
+                            city: doc.data().city,
+                            complement: doc.data().complement,
+                            image: doc.data().image,
+                            phone: doc.data().phone,
+                            state: doc.data().state,
+                            street: doc.data().street,
+                            website: doc.data().website,
+                            zipCode: doc.data().zipCode,
+                            email: doc.data().email,
+                            expertises: doc.data().expertises,
+                        });
+                    });
+                    setClinics(clinics);
+                });
         }
     };
 
