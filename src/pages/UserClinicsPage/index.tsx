@@ -6,31 +6,35 @@ import {
     Button,
     Modal,
     Paper,
+    Switch,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
-    TextField,
-    Typography,
 } from "@mui/material";
 import { MainHeader } from "../../components/main-header";
 import { Clinic } from "../../types/Clinic";
 import AuthContext from "../../context/auth";
+import { Procedure } from "../../types/Procedure";
 
 const UserClinicsPage = () => {
     const navigate = useNavigate();
     const { isAdmin } = useContext(AuthContext);
     const [clinics, setClinics] = useState<Clinic[]>([]);
-
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-
+    const [procedures, setProcedures] = useState<Procedure[]>([]);
+    const [proceduresClinic, setProceduresClinic] = useState<Procedure[]>([]);
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");
 
-    const handleOpen = async (id?: string) => {
+    const openProcedures = (id: string) => {
+        setIdEdit(id);
+        getProcedures(id);
+        setOpen(true);
+    };
+
+    const handleOpen = (id?: string) => {
         if (id) {
             navigate(`/registerClinic/${id}`);
         } else {
@@ -40,8 +44,6 @@ const UserClinicsPage = () => {
 
     const handleClose = () => {
         setOpen(false);
-        setName("");
-        setDescription("");
         setIdEdit("");
     };
 
@@ -57,30 +59,42 @@ const UserClinicsPage = () => {
         p: 4,
     };
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-
-        if (idEdit !== "") {
-            await firebase
-                .firestore()
-                .collection("clinics")
-                .doc(idEdit)
-                .update({
-                    name,
-                    description,
-                });
-        } else {
-            await firebase.firestore().collection("clinics").add({
-                name,
-                description,
-            });
-        }
-
-        handleClose();
-    };
-
     const deleteClinic = (id: string) => {
         firebase.firestore().collection("clinics").doc(id).delete();
+    };
+
+    const getProcedures = async (id: string) => {
+        const procedures = await firebase.firestore().collection("procedures").get();
+        const proceduresList: Procedure[] = [];
+        procedures.forEach((procedure) => {
+            proceduresList.push({
+                id: procedure.id,
+                name: procedure.data().name,
+                description: procedure.data().description,
+                price: procedure.data().price,
+                duration: procedure.data().duration,
+            });
+        });
+        setProcedures(proceduresList);
+
+        await firebase
+            .firestore()
+            .collection("clinics")
+            .doc(id)
+            .collection("procedures")
+            .onSnapshot((snapshot) => {
+                const proceduresClinicList: Procedure[] = [];
+                snapshot.forEach((procedure) => {
+                    proceduresClinicList.push({
+                        id: procedure.id,
+                        name: procedure.data().name,
+                        description: procedure.data().description,
+                        price: procedure.data().price,
+                        duration: procedure.data().duration,
+                    });
+                });
+                setProceduresClinic(proceduresClinicList);
+            });
     };
 
     const getClinics = async () => {
@@ -167,39 +181,75 @@ const UserClinicsPage = () => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={styleModal}>
-                    <Box
-                        component="form"
-                        sx={{
-                            "& .MuiTextField-root": { m: 1, width: "25ch" },
-                        }}
-                        autoComplete="off"
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        onSubmit={handleSubmit}
-                    >
-                        <Typography variant="h4">Clinica</Typography>
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Nome"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Descrição"
-                            type="text"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                        <Button variant="contained" type="submit">
-                            Salvar
-                        </Button>
-                    </Box>
+                    <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Nome</TableCell>
+                                    <TableCell align="right">
+                                        Descrição
+                                    </TableCell>
+                                    <TableCell align="right"></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {procedures.map((procedure) => (
+                                    <TableRow
+                                        key={procedure.id}
+                                        sx={{
+                                            "&:last-child td, &:last-child th":
+                                                { border: 0 },
+                                        }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {procedure.name}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Switch
+                                                checked={proceduresClinic.some(
+                                                    (procedureClinic) =>
+                                                        procedureClinic.id === procedure.id
+                                                )}
+                                                onChange={() => {
+                                                    if (
+                                                        proceduresClinic.some(
+                                                            (procedureClinic) =>
+                                                                procedureClinic.id === procedure.id
+                                                        )
+                                                    ) {
+                                                        firebase
+                                                            .firestore()
+                                                            .collection("clinics")
+                                                            .doc(idEdit)
+                                                            .collection("procedures")
+                                                            .doc(procedure.id)
+                                                            .delete();
+                                                    } else {
+                                                        firebase
+                                                            .firestore()
+                                                            .collection("clinics")
+                                                            .doc(idEdit)
+                                                            .collection("procedures")
+                                                            .doc(procedure.id)
+                                                            .set({
+                                                                name: procedure.name,
+                                                                description: procedure.description,
+                                                                price: procedure.price,
+                                                                duration: procedure.duration,
+                                                            });
+                                                    }
+                                                }}
+                                                inputProps={{
+                                                    "aria-label":
+                                                        "controlled",
+                                                }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Box>
             </Modal>
 
@@ -242,6 +292,15 @@ const UserClinicsPage = () => {
                                             {clinic.description}
                                         </TableCell>
                                         <TableCell align="right">
+                                            <Button
+                                                size="small"
+                                                color="primary"
+                                                onClick={() =>
+                                                    openProcedures(clinic.id)
+                                                }
+                                            >
+                                                Procedimentos
+                                            </Button>
                                             <Button
                                                 size="small"
                                                 color="primary"
