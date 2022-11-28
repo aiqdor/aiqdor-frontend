@@ -19,6 +19,7 @@ import UsersPage from "./pages/UsersPage";
 import ClinicPage from "./pages/ClinicPage";
 import UserPage from "./pages/UserPage";
 import UserClinicsPage from "./pages/UserClinicsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const AppRoutes = () => {
     const Private = ({ children }: { children: JSX.Element }) => {
@@ -121,6 +122,14 @@ const AppRoutes = () => {
                         element={
                             <Private>
                                 <ClinicSimpleRegister />
+                            </Private>
+                        }
+                    />
+                    <Route
+                        path="profile/"
+                        element={
+                            <Private>
+                                <ProfilePage />
                             </Private>
                         }
                     />

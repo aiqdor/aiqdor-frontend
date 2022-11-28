@@ -1,7 +1,5 @@
-import { useContext } from "react";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/auth";
 import { MainHeader } from "../../components/main-header";
 
 const AdminPage = () => {
@@ -19,6 +17,14 @@ const AdminPage = () => {
                 minHeight="100vh"
             >
                 Admin Page
+                
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/profile")}
+                >
+                    {"Editar Perfil"}
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"

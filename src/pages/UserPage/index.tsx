@@ -20,6 +20,13 @@ const UserPage = () => {
                 minHeight="100vh"
             >
                 User Page
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/profile")}
+                >
+                    {"Editar Perfil"}
+                </Button>
                 {isOwner ? (
                     <Button
                         variant="contained"
