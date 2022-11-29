@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { MainHeader } from "../../components/main-header";
 
@@ -8,7 +8,6 @@ const AdminPage = () => {
     return (
         <div>
             <MainHeader />
-
             <Box
                 display="flex"
                 flexDirection="column"
@@ -16,43 +15,53 @@ const AdminPage = () => {
                 alignItems="center"
                 minHeight="100vh"
             >
-                Admin Page
-                
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/profile")}
-                >
-                    {"Editar Perfil"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/procedures")}
-                >
-                    {"Procedures"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/users")}
-                >
-                    {"Usuários"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/expertises")}
-                >
-                    {"Especializações"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/clinics")}
-                >
-                    {"Clinicas"}
-                </Button>
+                <Grid container spacing={2} columns={16}>
+                    <Grid item xs> 
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/profile")}
+                        >
+                            {"Editar Perfil"}
+                        </Button>
+                    </Grid>
+                    <Grid item xs> 
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/procedures")}
+                        >
+                            {"Procedures"}
+                        </Button>
+                    </Grid>
+                    <Grid item xs> 
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/users")}
+                        >
+                            {"Usuários"}
+                        </Button>
+                    </Grid>
+                    <Grid item xs> 
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/expertises")}
+                        >
+                            {"Especializações"}
+                        </Button>
+                    </Grid>
+                    <Grid item xs> 
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/clinics")}
+                        >
+                            {"Clinicas"}
+                        </Button>
+                    </Grid>
+                </Grid>
             </Box>
         </div>
     );
