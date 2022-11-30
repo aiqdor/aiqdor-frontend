@@ -121,7 +121,7 @@ const ProcedurePage = () => {
                 </Button>
             </MainHeader>
 
-            <Button variant="contained" onClick={() => handleOpen()}>
+            <Button sx={{m: 1}} variant="contained" onClick={() => handleOpen()}>
                 Adicionar Procedimento
             </Button>
             <Modal
@@ -183,13 +183,13 @@ const ProcedurePage = () => {
                 </Box>
             </Modal>
 
-            <h1>Procedimentos</h1>
             <Box
-                sx={{ pt: 3 }}
+                sx={{ pt: 3, m: 2 }}
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
+                <h1>Procedimentos</h1>
                 {
                     <TableContainer component={Paper}>
                         <Table

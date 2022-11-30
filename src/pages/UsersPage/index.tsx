@@ -124,13 +124,9 @@ const UsersPage = () => {
 
     return (
         <Box>
-            <MainHeader>
-                <Button variant="contained" onClick={() => navigate("/")}>
-                    Voltar
-                </Button>
-            </MainHeader>
+            <MainHeader/>
 
-            <Button variant="contained" onClick={() => handleOpen()}>
+            <Button sx={{m: 1}} variant="contained" onClick={() => handleOpen()}>
                 Adicionar Usuário
             </Button>
             <Modal
@@ -212,13 +208,13 @@ const UsersPage = () => {
                 </Box>
             </Modal>
 
-            <h1>Usuários</h1>
             <Box
-                sx={{ pt: 3 }}
+                sx={{ pt: 3, m: 2 }}
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
+                <h1>Usuários</h1>
                 {
                     <TableContainer component={Paper}>
                         <Table

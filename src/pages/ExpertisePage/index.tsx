@@ -104,17 +104,21 @@ const ExpertisePage = () => {
     }, []);
 
     return (
-        <Box>
-            <MainHeader>
-                <Button variant="contained" onClick={() => navigate("/")}>
-                    Voltar
-                </Button>
-            </MainHeader>
+        <Box
+            sx={{
+                // display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh",
+            }}>
+            <MainHeader/>
 
-            <Button variant="contained" onClick={() => handleOpen()}>
+            <Button sx={{m: 1}}
+                variant="contained" 
+                onClick={() => handleOpen()}>
                 Adicionar Especialização
             </Button>
-            <Modal
+            <Modal 
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
@@ -157,13 +161,14 @@ const ExpertisePage = () => {
                 </Box>
             </Modal>
 
-            <h1>Especializações</h1>
+            
             <Box
-                sx={{ pt: 3 }}
+                sx={{ pt: 3, m: 2 }}
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
+                <h1>Especializações</h1>
                 {
                     <TableContainer component={Paper}>
                         <Table
