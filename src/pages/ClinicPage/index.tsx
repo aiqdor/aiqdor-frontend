@@ -23,6 +23,7 @@ import { Procedure } from "../../types/Procedure";
 import { Slot } from "../../types/Slot";
 import ptBR from "date-fns/locale/pt-BR";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const ClinicPage = () => {
     const [clinic, setClinic] = useState<Clinic>();
@@ -58,6 +59,7 @@ const ClinicPage = () => {
                     image: snapshot?.data()?.image,
                     expertises: snapshot?.data()?.expertises,
                     acceptInsurance: snapshot?.data()?.acceptInsurance,
+                    showTimeSlots: snapshot?.data()?.showTimeSlots,
                 };
                 setClinic(clinic);
             });
@@ -122,8 +124,6 @@ const ClinicPage = () => {
                 timeSlots: timeSlots,
             };
         });
-
-        // console.log(weekDays);
 
         return weekDays;
     };
@@ -216,18 +216,42 @@ const ClinicPage = () => {
             time_slot: selectedSlot,
         };
 
-        await firebase.firestore().collection("slots").add(payload);
+        const result = await firebase
+            .firestore()
+            .collection("slots")
+            .add(payload);
 
+        getUsedSlots();
         setOpen(false);
+
+        if (!!result) {
+            toast.success("Horário marcado com sucesso!", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            toast.error("Ocorreu um erro ao agendar este horário!", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
 
-    useEffect(() => {
+    const manualTimeSelect = useEffect(() => {
         getClinic();
         getProcedures();
         getUsedSlots();
     }, []);
-
-    console.log(usedSlots);
 
     if (!!clinic) {
         return (
@@ -285,6 +309,7 @@ const ClinicPage = () => {
                             borderRadius: 1,
                             borderColor: "divider",
                             p: 1,
+                            height: "fit-content",
                         }}
                     >
                         <Box
@@ -469,73 +494,100 @@ const ClinicPage = () => {
                                 ))}
                             </Box>
                         ) : null}
+                        {!clinic.showTimeSlots ? (
+                            <Link
+                                className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                                display="flex"
+                                color="#fff"
+                                alignItems="center"
+                                justifyContent="center"
+                                underline="none"
+                                href={`https://wa.me/55${clinic.phone
+                                    .replace("(", "")
+                                    .replace(")", "")
+                                    .replace(
+                                        " ",
+                                        ""
+                                    )}?text=Olá, vi sua clínica pelo Aiqdor e gostaria de agenda um horário.`}
+                            >
+                                Agendar horário
+                                <WhatsAppIcon
+                                    color="#fff"
+                                    sx={{ display: "flex" }}
+                                />
+                            </Link>
+                        ) : null}
                     </Box>
-                    <Box>
-                        <Box
-                            sx={{
-                                border: 1,
-                                borderRadius: 1,
-                                borderColor: "divider",
-                                p: 1,
-                                minWidth: 400,
-                            }}
-                        >
-                            <Divider
+                    {clinic.showTimeSlots ? (
+                        <Box>
+                            <Box
                                 sx={{
-                                    textAlign: "center",
+                                    border: 1,
+                                    borderRadius: 1,
+                                    borderColor: "divider",
+                                    p: 1,
+                                    minWidth: 400,
                                 }}
                             >
-                                Selecione um horário para agendar
-                            </Divider>
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                gap="10px"
-                            >
-                                {slots.map((slot) => (
-                                    <Box key={slot.text} maxWidth="130px">
-                                        <Box
-                                            textAlign="center"
-                                            sx={{
-                                                boxShadow: 1,
-                                                marginBottom: 1,
-                                            }}
-                                        >
-                                            <Typography>{slot.text}</Typography>
-                                            <Typography fontSize="18px">
-                                                {slot.day} / {slot.month}
-                                            </Typography>
+                                <Divider
+                                    sx={{
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    Selecione um horário para agendar
+                                </Divider>
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap="10px"
+                                >
+                                    {slots.map((slot) => (
+                                        <Box key={slot.text} maxWidth="130px">
+                                            <Box
+                                                textAlign="center"
+                                                sx={{
+                                                    boxShadow: 1,
+                                                    marginBottom: 1,
+                                                }}
+                                            >
+                                                <Typography>
+                                                    {slot.text}
+                                                </Typography>
+                                                <Typography fontSize="18px">
+                                                    {slot.day} / {slot.month}
+                                                </Typography>
+                                            </Box>
+                                            <Box
+                                                className="custom-scrollbar"
+                                                textAlign="center"
+                                                maxHeight="400px"
+                                                sx={{
+                                                    overflowY: "scroll",
+                                                }}
+                                            >
+                                                {slot.timeSlots.map((time) => (
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            marginBottom: 1,
+                                                        }}
+                                                        onClick={() =>
+                                                            handleTimeClick(
+                                                                time,
+                                                                slot
+                                                            )
+                                                        }
+                                                    >
+                                                        {time}
+                                                    </Button>
+                                                ))}
+                                            </Box>
                                         </Box>
-                                        <Box
-                                            className="custom-scrollbar"
-                                            textAlign="center"
-                                            maxHeight="400px"
-                                            sx={{
-                                                overflowY: "scroll",
-                                            }}
-                                        >
-                                            {slot.timeSlots.map((time) => (
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        marginBottom: 1,
-                                                    }}
-                                                    onClick={() =>
-                                                        handleTimeClick(
-                                                            time,
-                                                            slot
-                                                        )
-                                                    }
-                                                >
-                                                    {time}
-                                                </Button>
-                                            ))}
-                                        </Box>
-                                    </Box>
-                                ))}
+                                    ))}
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
+                    ) : null}
                 </Box>
             </div>
         );

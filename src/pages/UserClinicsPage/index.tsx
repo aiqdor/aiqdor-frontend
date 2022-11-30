@@ -121,6 +121,7 @@ const UserClinicsPage = () => {
                             zipCode: doc.data().zipCode,
                             email: doc.data().email,
                             expertises: doc.data().expertises,
+                            showTimeSlots: doc.data().showTimeSlots,
                         });
                     });
                     setClinics(clinics);
@@ -150,6 +151,7 @@ const UserClinicsPage = () => {
                             zipCode: doc.data().zipCode,
                             email: doc.data().email,
                             expertises: doc.data().expertises,
+                            showTimeSlots: doc.data().showTimeSlots,
                         });
                     });
                     setClinics(clinics);

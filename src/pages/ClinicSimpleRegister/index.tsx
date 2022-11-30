@@ -41,6 +41,7 @@ const ClinicSimpleRegister = () => {
     const [addressComplement, setAddressComplement] = useState("");
     const [image, setImage] = useState("");
     const [acceptInsurance, setAcceptInsurance] = useState(false);
+    const [showTimeSlots, setShowTimeSlots] = useState(false);
 
     const [imageUploaded, setImageUploaded] = useState(false);
     const [imageUploadError, setImageUploadError] = useState(false);
@@ -82,6 +83,7 @@ const ClinicSimpleRegister = () => {
                 zipCode: cep,
                 image,
                 acceptInsurance,
+                showTimeSlots,
             });
         } else {
             await firebase.firestore().collection("clinics").add({
@@ -100,6 +102,7 @@ const ClinicSimpleRegister = () => {
                 zipCode: cep,
                 image,
                 acceptInsurance,
+                showTimeSlots,
             });
         }
 
@@ -183,6 +186,7 @@ const ClinicSimpleRegister = () => {
                             setCep(data.zipCode);
                             setImage(data.image);
                             setAcceptInsurance(data.acceptInsurance);
+                            setShowTimeSlots(data.showTimeSlots);
                         }
                     }
                 });
@@ -197,15 +201,17 @@ const ClinicSimpleRegister = () => {
         setAcceptInsurance(e.target.checked);
     };
 
+    const handleShowTimeSlots = (e: any) => {
+        setShowTimeSlots(e.target.checked);
+    };
+
     const handleExpertiseSelect = (event: SelectChangeEvent) => {
         const {
             target: { value },
         } = event;
-        console.log(value, event);
         setSelectedExpertises(
             typeof value === "string" ? value.split(",") : value
         );
-        console.log(selectedExpertises);
     };
 
     return (
@@ -465,12 +471,18 @@ const ClinicSimpleRegister = () => {
                         ) : null}
                     </Box>
                 </Box>
-                <FormControlLabel
-                    onChange={handleAcceptInsurance}
-                    control={<Switch />}
-                    label="Aceita Unimed"
-                />
-
+                <Box display="flex">
+                    <FormControlLabel
+                        onChange={handleAcceptInsurance}
+                        control={<Switch />}
+                        label="Aceita Unimed"
+                    />
+                    <FormControlLabel
+                        onChange={handleShowTimeSlots}
+                        control={<Switch />}
+                        label="Deseja mostrar seus horários?"
+                    />
+                </Box>
                 <Box
                     sx={{
                         display: "flex",
