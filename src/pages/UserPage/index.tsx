@@ -19,16 +19,16 @@ const UserPage = () => {
                 alignItems="center"
                 minHeight="100vh"
             >
-                User Page
-                <Button
+                <Button sx={{m: 1}}
                     variant="contained"
                     color="primary"
                     onClick={() => navigate("/profile")}
                 >
                     {"Editar Perfil"}
                 </Button>
+
                 {isOwner ? (
-                    <Button
+                    <Button sx={{m: 1}}
                         variant="contained"
                         color="primary"
                         onClick={() => navigate("/clinics")}

@@ -171,7 +171,7 @@ const UserClinicsPage = () => {
                 </Button>
             </MainHeader>
 
-            <Button variant="contained" onClick={() => handleOpen()}>
+            <Button sx={{m: 1}} variant="contained" onClick={() => handleOpen()}>
                 Adicionar Clinica
             </Button>
             <Modal
@@ -252,13 +252,13 @@ const UserClinicsPage = () => {
                 </Box>
             </Modal>
 
-            <h1>Clinicas</h1>
             <Box
-                sx={{ pt: 3 }}
+                sx={{ pt: 3, m: 2 }}
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
+                <h1>Clinicas</h1>
                 {
                     <TableContainer component={Paper}>
                         <Table

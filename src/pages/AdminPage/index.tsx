@@ -8,7 +8,6 @@ const AdminPage = () => {
     return (
         <div>
             <MainHeader />
-
             <Box
                 display="flex"
                 flexDirection="column"
@@ -16,43 +15,50 @@ const AdminPage = () => {
                 alignItems="center"
                 minHeight="100vh"
             >
-                Admin Page
-                
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/profile")}
-                >
-                    {"Editar Perfil"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/procedures")}
-                >
-                    {"Procedures"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/users")}
-                >
-                    {"Usuários"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/expertises")}
-                >
-                    {"Especializações"}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/clinics")}
-                >
-                    {"Clinicas"}
-                </Button>
+                        <Box>
+                            <Button sx={{m: 1}}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate("/profile")}
+                            >
+                                {"Editar Perfil"}
+                            </Button>
+
+                            <Button sx={{m: 1}}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate("/procedures")}
+                            >
+                                {"Procedures"}
+                            </Button>
+                        </Box>
+
+                        <Box>
+                            <Button sx={{m: 1}}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate("/users")}
+                            >
+                                {"Usuários"}
+                            </Button>
+
+                            <Button sx={{m: 1}}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate("/expertises")}
+                            >
+                                {"Especializações"}
+                            </Button>
+
+                            <Button sx={{m: 1}}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate("/clinics")}
+                            >
+                                {"Clinicas"}
+                            </Button>
+                        </Box>
+
             </Box>
         </div>
     );
