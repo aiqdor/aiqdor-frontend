@@ -7,6 +7,7 @@ import {
     Button,
     Link,
     Tooltip,
+    Modal,
 } from "@mui/material";
 import { Clinic } from "../../types/Clinic";
 import { useEffect, useState } from "react";
@@ -14,13 +15,23 @@ import firebase from "firebase/app";
 import { MainHeader } from "../../components/main-header";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
+import { eachDayOfInterval, startOfWeek, endOfWeek, format } from "date-fns";
+
 import { useParams } from "react-router";
-import { Container } from "@mui/material";
 import { Procedure } from "../../types/Procedure";
+import { Slot } from "../../types/Slot";
+import ptBR from "date-fns/locale/pt-BR";
+import moment from "moment";
 
 const ClinicPage = () => {
     const [clinic, setClinic] = useState<Clinic>();
     const [procedures, setProcedures] = useState<Procedure[]>([]);
+    const [open, setOpen] = useState(false);
+    const [selectedTime, setSelectedTime] = useState("");
+    const [selectedSlot, setSelectedSlot] = useState({});
+    const [usedSlots, setUsedSlots] = useState<Slot[]>([]);
+
+    const authUser = firebase.auth().currentUser;
 
     const { id } = useParams();
 
@@ -66,28 +77,207 @@ const ClinicPage = () => {
                         name: doc?.data()?.name,
                         description: doc?.data()?.description,
                         price: doc?.data()?.price,
-                        duration: doc?.data()?.duration,
                     });
                     setProcedures(procedures);
                 });
             });
     };
 
+    const getUsedSlots = async () => {
+        firebase
+            .firestore()
+            .collection("slots")
+            .where("clinic", "==", id)
+            .where("user", "==", authUser?.uid)
+            .onSnapshot((snapshot) => {
+                const slots: Slot[] = [];
+                snapshot.forEach((doc) => {
+                    slots.push({
+                        date: doc?.data()?.date,
+                        clinic: doc?.data()?.clinic,
+                        timeSlots: doc?.data()?.timeSlots,
+                    });
+                    setUsedSlots(slots);
+                });
+            });
+    };
+
+    const getSlots = () => {
+        let week = eachDayOfInterval({
+            start: startOfWeek(new Date(), { weekStartsOn: 1 }),
+            end: endOfWeek(new Date(), { weekStartsOn: 1 }),
+        });
+
+        week.pop();
+        week.pop();
+
+        const timeSlots = createIntervals();
+
+        const weekDays = week.map((day) => {
+            return {
+                text: format(day, "ccc", { locale: ptBR, weekStartsOn: 1 }),
+                month: format(day, "LLL", { locale: ptBR, weekStartsOn: 1 }),
+                day: format(day, "dd", { locale: ptBR, weekStartsOn: 1 }),
+                timeSlots: timeSlots,
+            };
+        });
+
+        // console.log(weekDays);
+
+        return weekDays;
+    };
+
+    const createIntervals = () => {
+        let value = {
+            interval: "00:30:00",
+            startTime: "08:30:00",
+            endTime: "17:30:00",
+        };
+
+        let result = value.interval;
+        let start = "";
+        let timeNotation = "";
+        let time = "";
+        for (let i in result) {
+            let hr = moment(result, "HH:mm").format("HH");
+            let min = moment(result, "HH:mm").format("mm");
+            hr = hr != 0 ? parseInt(hr, 10) : "";
+            min = min != 0 ? parseInt(min, 10) : "";
+            if (hr != 0) {
+                time = hr;
+                timeNotation = "hour";
+                start = moment(value.startTime, "HH:mm").subtract(hr, "hour");
+            } else {
+                time = min;
+                timeNotation = "minutes";
+                start = moment(value.startTime, "HH:mm").subtract(
+                    min,
+                    "minutes"
+                );
+            }
+        }
+        let end = moment(value.endTime, "HH:mm");
+        if (end.isBefore(start)) end = end.add(1, "d");
+        let finalResult = [];
+        let current = moment(start);
+        let currentInterval = "";
+        while (current <= end) {
+            currentInterval = current.format("HH:mm") + " - ";
+            current.add(time, timeNotation);
+            currentInterval += current.format("HH:mm");
+            finalResult.push(currentInterval);
+        }
+
+        const mappedUsedSlots = usedSlots.map((slot) => {
+            return slot.date;
+        });
+
+        const toBeRemoved = [
+            "12:00 - 12:30",
+            "12:30 - 13:00",
+            "13:00 - 13:30",
+            ...mappedUsedSlots,
+        ];
+
+        finalResult = finalResult.filter((slot) => !toBeRemoved.includes(slot));
+
+        return finalResult;
+    };
+
+    const slots = getSlots();
+
+    const styleModal = {
+        position: "absolute",
+        top: "50%",
+        textAlign: "center",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    };
+
+    const handleTimeClick = (time: string, slot: object) => {
+        setSelectedTime(time);
+        setSelectedSlot(slot);
+        setOpen(true);
+    };
+
+    const handleSubmit = async () => {
+        delete selectedSlot.timeSlots;
+
+        const payload = {
+            clinic: id,
+            date: selectedTime,
+            user: authUser?.uid,
+            time_slot: selectedSlot,
+        };
+
+        await firebase.firestore().collection("slots").add(payload);
+
+        setOpen(false);
+    };
+
     useEffect(() => {
         getClinic();
         getProcedures();
+        getUsedSlots();
     }, []);
+
+    console.log(usedSlots);
 
     if (!!clinic) {
         return (
             <div>
                 <MainHeader />
-                <Container
+                <Box
                     sx={{
-                        marginTop: 10,
+                        margin: "100px auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: "60px",
+                        maxWidth: 1300,
+                        flexWrap: "wrap",
                     }}
                     maxWidth="sm"
                 >
+                    <Modal
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={styleModal}>
+                            <Typography>
+                                Deseja agendar esse horário?
+                            </Typography>
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Typography
+                                    sx={{
+                                        marginBottom: 2,
+                                        marginTop: 2,
+                                    }}
+                                >
+                                    {selectedSlot.day}/{selectedSlot.month} às{" "}
+                                    {selectedTime}
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    type="submit"
+                                    onClick={handleSubmit}
+                                >
+                                    Confirmar
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Modal>
                     <Box
                         sx={{
                             border: 1,
@@ -103,7 +293,7 @@ const ClinicPage = () => {
                         >
                             <Box
                                 sx={{
-                                    marginRight: 5,
+                                    marginRight: 4,
                                 }}
                             >
                                 <Avatar
@@ -278,16 +468,74 @@ const ClinicPage = () => {
                                 ))}
                             </Box>
                         ) : null}
-
-                        <Button
-                            sx={{ marginTop: 2 }}
-                            fullWidth
-                            variant="contained"
-                        >
-                            Marcar horário
-                        </Button>
                     </Box>
-                </Container>
+                    <Box>
+                        <Box
+                            sx={{
+                                border: 1,
+                                borderRadius: 1,
+                                borderColor: "divider",
+                                p: 1,
+                                minWidth: 400,
+                            }}
+                        >
+                            <Divider
+                                sx={{
+                                    textAlign: "center",
+                                }}
+                            >
+                                Selecione um horário para agendar
+                            </Divider>
+                            <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                gap="10px"
+                            >
+                                {slots.map((slot) => (
+                                    <Box key={slot.text} maxWidth="130px">
+                                        <Box
+                                            textAlign="center"
+                                            sx={{
+                                                boxShadow: 1,
+                                                marginBottom: 1,
+                                            }}
+                                        >
+                                            <Typography>{slot.text}</Typography>
+                                            <Typography fontSize="18px">
+                                                {slot.day} / {slot.month}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            className="custom-scrollbar"
+                                            textAlign="center"
+                                            maxHeight="400px"
+                                            sx={{
+                                                overflowY: "scroll",
+                                            }}
+                                        >
+                                            {slot.timeSlots.map((time) => (
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        marginBottom: 1,
+                                                    }}
+                                                    onClick={() =>
+                                                        handleTimeClick(
+                                                            time,
+                                                            slot
+                                                        )
+                                                    }
+                                                >
+                                                    {time}
+                                                </Button>
+                                            ))}
+                                        </Box>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
             </div>
         );
     } else {

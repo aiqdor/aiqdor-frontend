@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import {
-    Avatar,
     Button,
     FormControl,
     FormControlLabel,
@@ -51,20 +50,12 @@ const ClinicSimpleRegister = () => {
     const uploadImage = async (e: any) => {
         const file = e.target.files[0];
 
+        console.log(file);
+
         try {
             const response = await storage.child(file.name).put(file);
 
             setImage(await response.ref.getDownloadURL());
-
-            if (id) {
-                firebase
-                    .firestore()
-                    .collection("clinics")
-                    .doc(id)
-                    .update({
-                        image: await response.ref.getDownloadURL(),
-                    });
-            }
 
             setImageUploaded(true);
         } catch (err) {
@@ -199,7 +190,7 @@ const ClinicSimpleRegister = () => {
     }, []);
 
     const handleBack = () => {
-        navigate("/");
+        navigate(-1);
     };
 
     const handleAcceptInsurance = (e: any) => {
@@ -242,29 +233,6 @@ const ClinicSimpleRegister = () => {
                 alignItems="center"
                 onSubmit={handleSubmit}
             >
-                <Avatar
-                    sx={{ width: 80, height: 80 }}
-                    alt="Foto"
-                    src={image}
-                    variant="rounded"
-                />
-
-                <Button variant="contained" component="label">
-                    Upload Imagem
-                    <input
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        id="raised-button-file"
-                        type="file"
-                        onInput={(e) => uploadImage(e)}
-                    />
-                </Button>
-                {imageUploaded ? (
-                    <Icon color="success">check_circle</Icon>
-                ) : imageUploadError ? (
-                    <Icon color="error">error</Icon>
-                ) : null}
-
                 <Box className="form-separation">
                     <TextField
                         sx={{
@@ -333,7 +301,7 @@ const ClinicSimpleRegister = () => {
                             Estado
                         </InputLabel>
                         <Select
-                            // label="Estado"
+                            label="Estado"
                             value={selectedState}
                             MenuProps={{
                                 PaperProps: { sx: { maxHeight: 300 } },
@@ -358,13 +326,14 @@ const ClinicSimpleRegister = () => {
                         sx={{
                             width: "40%",
                         }}
+                        disabled={!selectedState}
                     >
                         <InputLabel id="demo-simple-select-label">
                             Cidade
                         </InputLabel>
                         <Select
                             autoWidth
-                            // label="Cidade"
+                            label="Cidade"
                             value={selectedCity}
                             MenuProps={{
                                 PaperProps: { sx: { maxHeight: 300 } },
@@ -463,7 +432,7 @@ const ClinicSimpleRegister = () => {
                 <Box className="form-separation">
                     <TextField
                         sx={{
-                            width: "100%",
+                            width: "40%",
                         }}
                         id="outlined"
                         label="Website"
@@ -471,6 +440,30 @@ const ClinicSimpleRegister = () => {
                         value={website}
                         onChange={(e) => setWebsite(e.target.value)}
                     />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "40%",
+                        }}
+                    >
+                        <Button variant="contained" component="label">
+                            Upload Imagem
+                            <input
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                id="raised-button-file"
+                                type="file"
+                                onInput={(e) => uploadImage(e)}
+                            />
+                        </Button>
+                        {imageUploaded ? (
+                            <Icon color="success">check_circle</Icon>
+                        ) : imageUploadError ? (
+                            <Icon color="error">error</Icon>
+                        ) : null}
+                    </Box>
                 </Box>
                 <FormControlLabel
                     onChange={handleAcceptInsurance}
@@ -491,7 +484,7 @@ const ClinicSimpleRegister = () => {
                     </Button>
 
                     <Button variant="contained" type="submit">
-                        {id ? "Atualizar" : "Cadastrar"}
+                        Cadastrar
                     </Button>
                 </Box>
             </Box>
