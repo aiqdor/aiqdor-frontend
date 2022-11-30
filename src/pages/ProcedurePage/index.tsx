@@ -22,7 +22,6 @@ const ProcedurePage = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(0);
     const [price, setPrice] = useState("");
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");
@@ -33,7 +32,6 @@ const ProcedurePage = () => {
             if (procedure) {
                 setName(procedure.name);
                 setDescription(procedure.description);
-                setDuration(procedure.duration);
                 setPrice(procedure.price);
                 setIdEdit(id);
             }
@@ -45,7 +43,6 @@ const ProcedurePage = () => {
         setOpen(false);
         setName("");
         setDescription("");
-        setDuration(0);
         setPrice("");
         setIdEdit("");
     }
@@ -69,14 +66,12 @@ const ProcedurePage = () => {
             await firebase.firestore().collection("procedures").doc(idEdit).update({
                 name,
                 description,
-                duration,
                 price,
             });
         } else {
             await firebase.firestore().collection("procedures").add({
                 name,
                 description,
-                duration,
                 price,
             });
         }
@@ -101,7 +96,6 @@ const ProcedurePage = () => {
                         id: doc.id,
                         name: doc.data().name,
                         description: doc.data().description,
-                        duration: doc.data().duration,
                         price: doc.data().price,
                     });
                     setProcedures(procedures);
@@ -168,14 +162,6 @@ const ProcedurePage = () => {
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                         />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Duração (minutos)"
-                            type="number"
-                            value={duration}
-                            onChange={(e) => setDuration(Number(e.target.value))}
-                        />
                         <Button variant="contained" type="submit">
                             Salvar
                         </Button>
@@ -206,9 +192,6 @@ const ProcedurePage = () => {
                                     <TableCell align="right">
                                         Preço&nbsp;(R$)
                                     </TableCell>
-                                    <TableCell align="right">
-                                        Duração&nbsp;(min)
-                                    </TableCell>
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -229,9 +212,6 @@ const ProcedurePage = () => {
                                         </TableCell>
                                         <TableCell align="right">
                                             {procedure.price}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {procedure.duration}
                                         </TableCell>
                                         <TableCell align="right">
                                             <Button

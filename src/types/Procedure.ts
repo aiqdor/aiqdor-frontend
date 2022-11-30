@@ -3,5 +3,4 @@ export type Procedure = {
     name: string;
     description: string;
     price: string;
-    duration: number;
 }

@@ -72,7 +72,6 @@ const UserClinicsPage = () => {
                 name: procedure.data().name,
                 description: procedure.data().description,
                 price: procedure.data().price,
-                duration: procedure.data().duration,
             });
         });
         setProcedures(proceduresList);
@@ -90,7 +89,6 @@ const UserClinicsPage = () => {
                         name: procedure.data().name,
                         description: procedure.data().description,
                         price: procedure.data().price,
-                        duration: procedure.data().duration,
                     });
                 });
                 setProceduresClinic(proceduresClinicList);
@@ -235,7 +233,6 @@ const UserClinicsPage = () => {
                                                                 name: procedure.name,
                                                                 description: procedure.description,
                                                                 price: procedure.price,
-                                                                duration: procedure.duration,
                                                             });
                                                     }
                                                 }}
