@@ -72,7 +72,6 @@ const UserClinicsPage = () => {
                 name: procedure.data().name,
                 description: procedure.data().description,
                 price: procedure.data().price,
-                duration: procedure.data().duration,
             });
         });
         setProcedures(proceduresList);
@@ -90,7 +89,6 @@ const UserClinicsPage = () => {
                         name: procedure.data().name,
                         description: procedure.data().description,
                         price: procedure.data().price,
-                        duration: procedure.data().duration,
                     });
                 });
                 setProceduresClinic(proceduresClinicList);
@@ -123,6 +121,7 @@ const UserClinicsPage = () => {
                             zipCode: doc.data().zipCode,
                             email: doc.data().email,
                             expertises: doc.data().expertises,
+                            showTimeSlots: doc.data().showTimeSlots,
                         });
                     });
                     setClinics(clinics);
@@ -152,6 +151,7 @@ const UserClinicsPage = () => {
                             zipCode: doc.data().zipCode,
                             email: doc.data().email,
                             expertises: doc.data().expertises,
+                            showTimeSlots: doc.data().showTimeSlots,
                         });
                     });
                     setClinics(clinics);
@@ -235,7 +235,6 @@ const UserClinicsPage = () => {
                                                                 name: procedure.name,
                                                                 description: procedure.description,
                                                                 price: procedure.price,
-                                                                duration: procedure.duration,
                                                             });
                                                     }
                                                 }}

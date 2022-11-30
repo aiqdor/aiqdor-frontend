@@ -14,5 +14,6 @@ export type Clinic = {
     idUser: string;
     zipCode: string;
     acceptInsurance: boolean;
+    showTimeSlots: boolean;
     image: string;
 }

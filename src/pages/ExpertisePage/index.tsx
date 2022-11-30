@@ -22,7 +22,6 @@ const ExpertisePage = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(0);
     const [price, setPrice] = useState("");
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState("");

@@ -9,14 +9,14 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
-import firebase from "firebase";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth";
+import { ListItemButton } from "@mui/material";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 const MenuIcon = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [userAvatarUrl, setUserAvatarUrl] = React.useState("");
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,21 +25,6 @@ const MenuIcon = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
-    };
-
-    const getUserAvatar = async () => {
-        const user = firebase.auth().currentUser;
-
-        if (user) {
-            const userAvatar = await firebase
-                .firestore()
-                .collection("users")
-                .doc(user.uid)
-                .get();
-
-            setUserAvatarUrl(userAvatar.data()?.image);
-            console.log(userAvatar.data()?.image);
-        }
     };
 
     const { isAuthenticated, logout, isAdmin } = useContext(AuthContext);
@@ -52,10 +37,6 @@ const MenuIcon = () => {
             navigate("/login");
         }
     };
-
-    React.useEffect(() => {
-        getUserAvatar();
-    }, []);
 
     return (
         <React.Fragment>
@@ -75,7 +56,7 @@ const MenuIcon = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                     >
-                        <Avatar src={userAvatarUrl} sx={{ width: 32, height: 32 }}></Avatar>
+                        <Avatar sx={{ width: 32, height: 32 }}></Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -119,9 +100,11 @@ const MenuIcon = () => {
                         <MenuItem>
                             <Button
                                 variant="text"
-                                onClick={() => navigate(isAdmin ? "/admin" : "/user")}
+                                onClick={() =>
+                                    navigate(isAdmin ? "/admin" : "/user")
+                                }
                             >
-                                <Avatar src={userAvatarUrl} /> Perfil
+                                <Avatar /> Perfil
                             </Button>
                         </MenuItem>
                         <Divider />
