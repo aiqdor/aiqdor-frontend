@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-
+import InputMask  from "react-input-mask";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+// import PhoneInput from "../../components/phoneInput";
+import { PhoneInput } from "../../components/phone-input";
+
 import {
     Button,
     FormControl,
@@ -19,6 +22,7 @@ import { Expertise } from "../../types/Expertise";
 import { State } from "../../types/State";
 import { City } from "../../types/City";
 import { useParams } from "react-router";
+import { CepInput } from "../../components/cep-input";
 
 const ClinicSimpleRegister = () => {
     const navigate = useNavigate();
@@ -359,16 +363,9 @@ const ClinicSimpleRegister = () => {
                 </Box>
 
                 <Box className="form-separation">
-                    <TextField
-                        sx={{
-                            width: "40%",
-                        }}
-                        required
-                        id="outlined-required"
-                        label="CEP"
-                        type="text"
+                    <CepInput 
                         value={cep}
-                        onChange={(e) => setCep(e.target.value)}
+                        onChange={(e: any) => setCep(e.target.value)}
                     />
 
                     <TextField
@@ -422,16 +419,9 @@ const ClinicSimpleRegister = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
 
-                    <TextField
-                        sx={{
-                            width: "40%",
-                        }}
-                        required
-                        id="outlined-required"
-                        label="Telefone"
-                        type="text"
+                    <PhoneInput 
                         value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        onChange={(e: any) => setPhoneNumber(e.target.value)}
                     />
                 </Box>
 
