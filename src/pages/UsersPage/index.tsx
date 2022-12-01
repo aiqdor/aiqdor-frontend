@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { MainHeader } from "../../components/main-header";
 import { User } from "../../types/User";
+import { PhoneInput } from "../../components/phone-input";
 
 const UsersPage = () => {
     const navigate = useNavigate();
@@ -173,13 +174,9 @@ const UsersPage = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <TextField
-                            required
-                            id="outlined-required"
-                            label="Telefone"
-                            type="text"
+                        <PhoneInput 
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            onChange={(e: any) => setPhoneNumber(e.target.value)}
                         />
                         Dono de clínica?
                         <Stack direction="row" spacing={1} alignItems="center">

@@ -158,7 +158,7 @@ const ProcedurePage = () => {
                             required
                             id="outlined-required"
                             label="Preço"
-                            type="text"
+                            type="number"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                         />

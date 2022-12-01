@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Navigate, useNavigate } from "react-router-dom";
+import { PhoneInput } from "../../components/phone-input";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -118,14 +119,10 @@ const RegisterPage = () => {
                     autoComplete="email"
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Telefone"
-                    type="phone"
-                    autoComplete="tel"
+
+                <PhoneInput 
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e: any) => setPhoneNumber(e.target.value)}
                 />
             </Box>
             <Box>

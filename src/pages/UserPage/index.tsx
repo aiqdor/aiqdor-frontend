@@ -78,7 +78,6 @@ const UserPage = () => {
                     </Button>
                 ) : null}
 
-                {/* PROXIMOS HORARIOS */}
                 <Box>
                     <h2>Próximos Horários</h2>
                     <TableContainer component={Paper}>
