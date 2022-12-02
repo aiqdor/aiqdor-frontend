@@ -11,10 +11,11 @@ import {
     Modal,
 } from "@mui/material";
 import { Clinic } from "../../types/Clinic";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { MainHeader } from "../../components/main-header";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { AuthContext } from "../../context/auth";
 
 import { eachDayOfInterval, startOfWeek, endOfWeek, format } from "date-fns";
 
@@ -33,9 +34,9 @@ const ClinicPage = () => {
     const [selectedSlot, setSelectedSlot] = useState({});
     const [usedSlots, setUsedSlots] = useState<Slot[]>([]);
 
-    const authUser = firebase.auth().currentUser;
-
     const { id } = useParams();
+
+    const { user } = useContext(AuthContext);
 
     const getClinic = async () => {
         firebase
@@ -91,14 +92,15 @@ const ClinicPage = () => {
             .firestore()
             .collection("slots")
             .where("clinic", "==", id)
-            .where("user", "==", authUser?.uid)
             .onSnapshot((snapshot) => {
                 const slots: Slot[] = [];
                 snapshot.forEach((doc) => {
                     slots.push({
-                        date: doc?.data()?.date,
+                        day: doc?.data()?.day,
+                        month: doc?.data()?.month,
                         clinic: doc?.data()?.clinic,
-                        timeSlots: doc?.data()?.timeSlots,
+                        timeSlots: doc?.data()?.time_slot,
+                        time: doc?.data()?.time,
                     });
                     setUsedSlots(slots);
                 });
@@ -123,6 +125,18 @@ const ClinicPage = () => {
                 day: format(day, "dd", { locale: ptBR, weekStartsOn: 1 }),
                 timeSlots: timeSlots,
             };
+        });
+
+        weekDays.forEach((day) => {
+            day.timeSlots.forEach((slot) => {
+                usedSlots.forEach((usedSlot) => {
+                    if (usedSlot.day === day.day && usedSlot.time === slot) {
+                        day.timeSlots = day.timeSlots.filter(
+                            (slot1) => slot1 !== slot
+                        );
+                    }
+                });
+            });
         });
 
         return weekDays;
@@ -169,16 +183,7 @@ const ClinicPage = () => {
             finalResult.push(currentInterval);
         }
 
-        const mappedUsedSlots = usedSlots.map((slot) => {
-            return slot.date;
-        });
-
-        const toBeRemoved = [
-            "12:00 - 12:30",
-            "12:30 - 13:00",
-            "13:00 - 13:30",
-            ...mappedUsedSlots,
-        ];
+        const toBeRemoved = ["12:00 - 12:30", "12:30 - 13:00", "13:00 - 13:30"];
 
         finalResult = finalResult.filter((slot) => !toBeRemoved.includes(slot));
 
@@ -207,12 +212,12 @@ const ClinicPage = () => {
     };
 
     const handleSubmit = async () => {
-        delete selectedSlot.timeSlots;
-
         const payload = {
             clinic: id,
-            date: selectedTime,
-            user: authUser?.uid,
+            day: selectedSlot.day,
+            month: selectedSlot.month,
+            user: user.uid,
+            time: selectedTime,
             time_slot: selectedSlot,
         };
 
@@ -221,7 +226,6 @@ const ClinicPage = () => {
             .collection("slots")
             .add(payload);
 
-        getUsedSlots();
         setOpen(false);
 
         if (!!result) {
@@ -245,9 +249,10 @@ const ClinicPage = () => {
                 progress: undefined,
             });
         }
+        await getUsedSlots();
     };
 
-    const manualTimeSelect = useEffect(() => {
+    useEffect(() => {
         getClinic();
         getProcedures();
         getUsedSlots();
@@ -499,6 +504,9 @@ const ClinicPage = () => {
                                 className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
                                 display="flex"
                                 color="#fff"
+                                backgroundColor="#2196f3"
+                                padding="6px 16px"
+                                borderRadius="8px"
                                 alignItems="center"
                                 justifyContent="center"
                                 underline="none"
@@ -511,10 +519,7 @@ const ClinicPage = () => {
                                     )}?text=Olá, vi sua clínica pelo Aiqdor e gostaria de agenda um horário.`}
                             >
                                 Agendar horário
-                                <WhatsAppIcon
-                                    color="#fff"
-                                    sx={{ display: "flex" }}
-                                />
+                                <WhatsAppIcon sx={{ display: "flex" }} />
                             </Link>
                         ) : null}
                     </Box>

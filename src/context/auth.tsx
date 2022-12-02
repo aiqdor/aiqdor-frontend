@@ -68,7 +68,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
     };
 
-
     const logout = async (forceLogin: boolean = true) => {
         localStorage.removeItem("authUser");
         localStorage.removeItem("isAdmin");
